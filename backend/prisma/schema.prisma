@@ -31,9 +31,7 @@ model Products{
   inStock Boolean
   image String
   price Float
-  productQty ProductQty[]
-  isFeatured Boolean @default(false)
-  
+  productQty ProductQty[]  
 }
 
 model Orders {

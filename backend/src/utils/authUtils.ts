@@ -16,12 +16,19 @@ export const isPasswordValid = async (
   return await compare(password, passwordHash);
 };
 
-export const generateJwt = ({ email, firstName, lastName, role }: User) => {
+export const generateJwt = ({
+  email,
+  firstName,
+  lastName,
+  role,
+  isActive,
+}: User) => {
   const unsecuredUserInfo = {
     email,
     firstName,
     lastName,
     role,
+    isActive,
   };
   return jwt.sign(unsecuredUserInfo, jwtSecret);
 };
