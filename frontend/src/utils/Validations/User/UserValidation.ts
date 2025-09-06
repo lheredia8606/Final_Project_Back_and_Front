@@ -19,8 +19,8 @@ export const isPhoneValid = (phone: string[]) => {
   return true;
 };
 
-export function isUserValid(userInfo: Omit<TUser, "id">) {
-  const { email, firstName, lastName, phone } = userInfo;
+export function isUserValid(userInfo: Omit<TUser, "id">, phone: string[]) {
+  const { email, firstName, lastName } = userInfo;
 
   return (
     isEmailValid(email) &&

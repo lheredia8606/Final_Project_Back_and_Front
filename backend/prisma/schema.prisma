@@ -32,6 +32,8 @@ model Products{
   image String
   price Float
   productQty ProductQty[]
+  isFeatured Boolean @default(false)
+  
 }
 
 model Orders {

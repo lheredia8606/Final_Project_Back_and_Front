@@ -32,14 +32,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     null
   );
 
-  const authenticate = (email: string, password: string) => {
+  const authenticate = (email: string) => {
     const user = allUsers.find((user) => {
       return user.email.toLowerCase() === email.toLowerCase();
     });
     if (!user) {
       throw new Error("No user found!");
-    } else if (user.password !== password) {
-      throw new Error("Wrong Password!");
     } else {
       setAuthenticatedUser(user);
     }

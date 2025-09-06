@@ -13,12 +13,11 @@ authController.post("/auth/login", validateLoginBody, async (req, res) => {
       email: req.body.email,
     },
   });
-  if (!user) {
-    return res.status(401).json({ message: "invalid User" });
+  if (!user || !(await isPasswordValid(req.body.password, user.passwordHash))) {
+    return res.status(401).json({ message: "Invalid credentials" });
   }
-
-  if (!(await isPasswordValid(req.body.password, user.passwordHash))) {
-    return res.status(401).json({ message: "invalid password" });
+  if (!user.isActive) {
+    return res.status(401).json({ message: "Inactive User" });
   }
   return res.status(200).json({ token: generateJwt(user) });
 });

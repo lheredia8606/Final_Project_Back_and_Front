@@ -27,3 +27,16 @@ export const getOrderDeadLine = (days: number) => {
   const today = Temporal.Now.plainDateISO();
   return today.add({ days }).toString();
 };
+
+/**
+ *
+ * @param iat issue at
+ * @returns true if the day in the Date correspond to today's date, otherwise false
+ */
+export const isTokenValidToday = (iat: number): boolean => {
+  const issuedDate = Temporal.Instant.fromEpochSeconds(iat)
+    .toZonedDateTimeISO("UTC")
+    .toPlainDate();
+  const today = Temporal.Now.plainDateISO("UTC");
+  return Temporal.PlainDate.compare(issuedDate, today) === 0;
+};

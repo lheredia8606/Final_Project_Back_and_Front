@@ -3,14 +3,14 @@ import { useState } from "react";
 import "../styles/modal/modal-style.css";
 import { useUser } from "../Providers/UserProvider";
 import { ErrorModal } from "../Components/ErrorModal/ErrorModal";
-import { jwtDecode } from "jwt-decode";
+import { getUserFromJwt } from "../utils/Validations/authUtils";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { allUsers, setAuthenticatedUser } = useUser();
+  const { setAuthenticatedUser } = useUser();
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [showModalError, setShowModalError] = useState<boolean>(false);
@@ -34,8 +34,20 @@ function RouteComponent() {
         throw new Error(result.message);
       }
       const token = result.token;
-      const decodedUser = jwtDecode(token);
-      console.log(decodedUser);
+      localStorage.setItem("userJwt", token);
+      const user = getUserFromJwt(token);
+      if (user) {
+        setAuthenticatedUser(user);
+        let toRoute = "";
+        if (user.role === "admin") {
+          toRoute = "/adminPage/UnassignedOrders";
+        } else if (user.role === "worker") {
+          toRoute = "/workerPage/UnassignedOrders";
+        } else {
+          toRoute = "/clientPage/products";
+        }
+        router.navigate({ to: toRoute });
+      }
     } catch (err: unknown) {
       let errorMessage = "An unexpected error occurred";
       if (err instanceof Error) {
@@ -44,32 +56,6 @@ function RouteComponent() {
       setShowModalError(true);
       setModalErrorMessage(errorMessage);
     }
-
-    console.log("locate this and erase all code from json-server");
-
-    ////////////////////all json-server stuff//////////////////////////////////////
-    // const user = allUsers?.find((user) => {
-    //   return user.email.toLowerCase() === emailInput.toLowerCase();
-    // });
-    // if (!user) {
-    //   setShowModalError(true);
-    //   setModalErrorMessage("No user found!");
-    // } else if (user.password !== passwordInput) {
-    //   setShowModalError(true);
-    //   setModalErrorMessage("Wrong password!");
-    // } else {
-    //   localStorage.setItem("authenticatedUser", user.id);
-    //   let toRoute = "";
-    //   if (user.role === "admin") {
-    //     toRoute = "/adminPage/UnassignedOrders";
-    //   } else if (user.role === "worker") {
-    //     toRoute = "/workerPage/UnassignedOrders";
-    //   } else {
-    //     toRoute = "/clientPage/products";
-    //   }
-    //   setAuthenticatedUser(user);
-    //   router.navigate({ to: toRoute });
-    // }
   };
 
   return (

@@ -8,38 +8,35 @@ import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { useUser } from "../Providers/UserProvider";
 import "../styles/root/root-style.css";
 import { useEffect } from "react";
+import { getUserFromJwt } from "../utils/Validations/authUtils";
 
 export const Route = createRootRoute({
   component: RootComponent,
 });
 
 function RootComponent() {
-  const { authenticatedUser, setAuthenticatedUser, allUsers } = useUser();
+  const { authenticatedUser, setAuthenticatedUser } = useUser();
   const router = useRouter();
   const goToMyPage = () => {
     if (!authenticatedUser) {
       router.navigate({ to: "/" });
-    }
-    if (authenticatedUser?.role === "admin") {
+    } else if (authenticatedUser.role === "admin") {
       router.navigate({ to: "/adminPage/UnassignedOrders" });
-    } else if (authenticatedUser?.role === "client") {
+    } else if (authenticatedUser.role === "client") {
       router.navigate({ to: "/clientPage/products" });
-    } else if (authenticatedUser?.role === "worker") {
+    } else if (authenticatedUser.role === "worker") {
       router.navigate({ to: "/workerPage/UnassignedOrders" });
     }
   };
   useEffect(() => {
-    const currentUserId = localStorage.getItem("authenticatedUser");
-    if (!currentUserId) return;
-    try {
-      const foundUser = allUsers?.find((user) => user.id === currentUserId);
-      if (foundUser) {
-        setAuthenticatedUser(foundUser);
+    const token = localStorage.getItem("userJwt");
+    if (token) {
+      const user = getUserFromJwt(token);
+      if (user) {
+        setAuthenticatedUser(user);
       }
-    } catch (error) {
-      console.error("Failed to parse currentUser from localStorage", error);
     }
-  }, [allUsers]);
+  }, []);
   return (
     <>
       <header className="header">
@@ -72,7 +69,7 @@ function RootComponent() {
                 <a
                   href="#"
                   onClick={() => {
-                    localStorage.removeItem("authenticatedUser");
+                    localStorage.removeItem("userJwt");
                     setAuthenticatedUser(null);
                   }}
                 >
