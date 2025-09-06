@@ -1,0 +1,212 @@
+{
+  "users": [
+    {
+      "id": "asdasa",
+      "firstName": "Alice",
+      "lastName": "Thompson",
+      "email": "client@gmail.com",
+      "password": "a",
+      "role": "client",
+      "phone": [
+        "813",
+        "500",
+        "2587"
+      ],
+      "isActive": "true"
+    },
+    {
+      "id": "gfgrty",
+      "firstName": "Bob",
+      "lastName": "Martinez",
+      "email": "bbmartinez@gmail.com",
+      "password": "a",
+      "role": "client",
+      "phone": [
+        "813",
+        "300",
+        "5699"
+      ],
+      "isActive": "false"
+    },
+    {
+      "id": "jhyqw",
+      "firstName": "Sophia",
+      "lastName": "Reynolds",
+      "email": "sreynolds@gmail.com",
+      "password": "a",
+      "role": "client",
+      "phone": [
+        "813",
+        "564",
+        "0214"
+      ],
+      "isActive": "true"
+    },
+    {
+      "id": "bnhjhk",
+      "firstName": "James",
+      "lastName": "Carter",
+      "email": "worker@gmail.com",
+      "password": "a",
+      "role": "worker",
+      "phone": [
+        "813",
+        "279",
+        "9512"
+      ],
+      "isActive": "true"
+    },
+    {
+      "id": "asdgcccqw",
+      "firstName": "Emma",
+      "lastName": "Sinclair",
+      "email": "eSinclair@gmail.com",
+      "password": "a",
+      "role": "worker",
+      "phone": [
+        "813",
+        "5471",
+        "3647"
+      ],
+      "isActive": "false"
+    },
+    {
+      "id": "iudfxwa",
+      "firstName": "Emma",
+      "lastName": "Smith",
+      "email": "eSmith@gmail.com",
+      "password": "a",
+      "role": "worker",
+      "phone": [
+        "813",
+        "341",
+        "3897"
+      ],
+      "isActive": "true"
+    },
+    {
+      "id": "asdbzli",
+      "firstName": "Admin",
+      "lastName": "Jhonson",
+      "email": "admin@gmail.com",
+      "password": "a",
+      "role": "admin",
+      "phone": [
+        "813",
+        "341",
+        "3897"
+      ],
+      "isActive": "true"
+    },
+    {
+      "id": "3ad3",
+      "email": "leo@leo.leo",
+      "firstName": "leo",
+      "isActive": true,
+      "lastName": "leo",
+      "password": "leo",
+      "phone": [
+        "123",
+        "456",
+        "7890"
+      ],
+      "role": "client"
+    }
+  ],
+  "products": [
+    {
+      "id": "asdf",
+      "type": "bag",
+      "name": "some name 1",
+      "inStock": true,
+      "image": "/public/images/bag-01.png",
+      "price": 6.99
+    },
+    {
+      "id": "gfhjfe",
+      "type": "mug",
+      "name": "some name 2",
+      "inStock": true,
+      "image": "/public/images/couple-2.png",
+      "price": 25.99
+    },
+    {
+      "id": "puouoi",
+      "type": "bag",
+      "name": "some name 3",
+      "inStock": false,
+      "image": "/public/images/bag-02.png",
+      "price": 4.99
+    },
+    {
+      "id": "qazwsd",
+      "type": "t-shirt",
+      "name": "some name 4",
+      "inStock": true,
+      "image": "/public/images/my-heart-belongs-to-him.png",
+      "price": 19.99
+    }
+  ],
+  "orders": [
+    {
+      "id": "8e04",
+      "clientId": "bnhjhk",
+      "deadLine": null,
+      "productQty": [],
+      "status": "in_cart"
+    },
+    {
+      "id": "259b",
+      "clientId": "asdbzli",
+      "deadLine": null,
+      "productQty": [],
+      "status": "in_cart"
+    },
+    {
+      "id": "d79c",
+      "clientId": "asdasa",
+      "deadLine": "2025-03-20",
+      "productQty": [
+        {
+          "productId": "asdf",
+          "quantity": 1
+        }
+      ],
+      "status": "ready",
+      "workerId": "bnhjhk"
+    },
+    {
+      "id": "3d20",
+      "clientId": "asdasa",
+      "deadLine": "2025-03-20",
+      "productQty": [
+        {
+          "productId": "asdf",
+          "quantity": 1
+        }
+      ],
+      "status": "ordered"
+    },
+    {
+      "id": "5b97",
+      "clientId": "asdasa",
+      "deadLine": null,
+      "productQty": [],
+      "status": "in_cart"
+    },
+    {
+      "id": "d018",
+      "clientId": "asdbzli",
+      "deadLine": null,
+      "productQty": [],
+      "status": "in_cart"
+    },
+    {
+      "id": "62fa",
+      "clientId": "asdbzli",
+      "deadLine": null,
+      "productQty": [],
+      "status": "in_cart"
+    }
+  ]
+}
