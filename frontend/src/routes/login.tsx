@@ -4,6 +4,7 @@ import "../styles/modal/modal-style.css";
 import { useUser } from "../Providers/UserProvider";
 import { ErrorModal } from "../Components/ErrorModal/ErrorModal";
 import { getUserFromJwt } from "../utils/Validations/authUtils";
+import { authenticate } from "../api/apiAuth";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
@@ -19,16 +20,7 @@ function RouteComponent() {
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: emailInput,
-          password: passwordInput,
-        }),
-      });
+      const response = await authenticate(emailInput, passwordInput);
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.message);
