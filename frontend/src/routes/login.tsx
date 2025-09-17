@@ -26,6 +26,7 @@ function RouteComponent() {
         throw new Error(result.message);
       }
       const token = result.token;
+
       localStorage.setItem("userJwt", token);
       const user = getUserFromJwt(token);
       if (user) {

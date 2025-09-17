@@ -1,5 +1,5 @@
 import { ReactNode } from "@tanstack/react-router";
-import { TOrder } from "../../../utils/ApplicationTypesAndGlobals";
+import { TOrder, TProductQty } from "../../../utils/ApplicationTypesAndGlobals";
 import {
   getDateFromString,
   getDaysUntilDeathLine,
@@ -10,10 +10,12 @@ import "./OrderCard.css";
 
 type TOrderCardProps = {
   order: TOrder;
+  productQty: TProductQty[];
   children: ReactNode;
 };
 export const OrderCard = ({
-  order: { id, status, productQty, deadLine },
+  order: { id, status, deadLine },
+  productQty,
   children,
 }: TOrderCardProps) => {
   const getStatusClassName = (): string => {
@@ -61,7 +63,7 @@ export const OrderCard = ({
             <span className="deadline-time">{getDeadLineText(deadLine)}</span>
           </p>
         </div>
-        <OrderProdTable products={productQty} />
+        <OrderProdTable productQuantities={productQty} />
         {children}
       </div>
     </>

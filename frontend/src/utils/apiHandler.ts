@@ -1,35 +1,30 @@
-export type TAPiHandlerReturn<T> = {
-  getAll: () => Promise<Response>;
-  post: (newElement: Omit<T, "id">) => Promise<Response>;
-  delete: (id: string) => Promise<Response>;
-  update: (
-    id: string,
-    elementToUpdate: Partial<Omit<T, "id">>
-  ) => Promise<Response>;
-};
-
-export const apiHandler = <T>(baseUrl: string, endPoint: string) => {
+export const apiHandlerThree = <T>(baseUrl: string, endPoint: string) => {
   const urlEndpoint = `${baseUrl}${endPoint}`;
   return {
-    /**
-     *
-     * @returns Promise that resolve in T[]
-     */
-    getAll: (): Promise<T[]> => {
-      return fetch(urlEndpoint).then((response) => {
+    getAll: () => {
+      return fetch(urlEndpoint, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
+        },
+      }).then(async (response) => {
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Network response was no Ok");
+          throw new Error(result.message);
         }
-        return response.json();
+        return result.data;
       });
     },
-
     get: (id: string): Promise<T> => {
-      return fetch(`${urlEndpoint}/${id}`).then((response) => {
+      return fetch(`${urlEndpoint}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
+        },
+      }).then(async (response) => {
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Network response was no Ok");
+          throw new Error(result.message);
         }
-        return response.json();
+        return result.data;
       });
     },
     /**
@@ -43,12 +38,14 @@ export const apiHandler = <T>(baseUrl: string, endPoint: string) => {
         body: JSON.stringify(newElement),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
         },
-      }).then((response) => {
+      }).then(async (response) => {
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Network response was no Ok");
+          throw new Error(result.message);
         }
-        return response.json();
+        return result.data;
       });
     },
     /**
@@ -59,11 +56,15 @@ export const apiHandler = <T>(baseUrl: string, endPoint: string) => {
     delete: (id: string): Promise<T> => {
       return fetch(`${urlEndpoint}/${id}`, {
         method: "DELETE",
-      }).then((response) => {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
+        },
+      }).then(async (response) => {
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Network response was no Ok");
+          throw new Error(result.message);
         }
-        return response.json();
+        return result.data;
       });
     },
 
@@ -82,12 +83,14 @@ export const apiHandler = <T>(baseUrl: string, endPoint: string) => {
         body: JSON.stringify(elementToUpdate),
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
         },
-      }).then((response) => {
+      }).then(async (response) => {
+        const result = await response.json();
         if (!response.ok) {
-          throw new Error("Network response was no Ok");
+          throw new Error(result.message);
         }
-        return response.json();
+        return result.data;
       });
     },
   };

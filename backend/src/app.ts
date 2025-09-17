@@ -1,7 +1,9 @@
 import express from "express";
-import { authController } from "./routes/auth.route.js";
 import cors from "cors";
-import { productController } from "./routes/products.route.js";
+import { productController } from "./routes/product/products.route.js";
+import { authController } from "./routes/authentication/auth.route.js";
+import { prdQtyController } from "./routes/productQty/ProductQty.route.js";
+import { orderController } from "./routes/order/order.route.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -12,6 +14,8 @@ app.get("/", (req, res) => {
 });
 app.use(authController);
 app.use(productController);
+app.use(prdQtyController);
+app.use(orderController);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

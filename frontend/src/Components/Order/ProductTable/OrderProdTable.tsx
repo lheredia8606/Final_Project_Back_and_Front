@@ -1,10 +1,10 @@
 import { useProducts } from "../../../Providers/ProductProvider";
-import { TOrderProductQty } from "../../../utils/ApplicationTypesAndGlobals";
+import { TProductQty } from "../../../utils/ApplicationTypesAndGlobals";
 import "./OrderProdTable.css";
 type TOrderProdTableProps = {
-  products: TOrderProductQty[];
+  productQuantities: TProductQty[];
 };
-export const OrderProdTable = ({ products }: TOrderProdTableProps) => {
+export const OrderProdTable = ({ productQuantities }: TOrderProdTableProps) => {
   const { getProductById } = useProducts();
   return (
     <>
@@ -18,11 +18,11 @@ export const OrderProdTable = ({ products }: TOrderProdTableProps) => {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => {
+              {productQuantities.map((pQty) => {
                 return (
-                  <tr key={product.productId}>
-                    <td>{getProductById(product.productId)?.name}</td>
-                    <td className="centered">{product.quantity}</td>
+                  <tr key={pQty.productId}>
+                    <td>{getProductById(pQty.productId)?.name}</td>
+                    <td className="centered">{pQty.qty}</td>
                   </tr>
                 );
               })}

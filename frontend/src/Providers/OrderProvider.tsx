@@ -82,9 +82,8 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
         const newOrder: Omit<TOrder, "id"> = {
           clientId: authenticatedUser.id,
           deadLine: null,
-          productQty: [],
           status: "in_cart",
-          workerId: undefined,
+          workerId: null,
         };
         addOrderMutation.mutate(newOrder);
       }

@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { prisma } from "../utils/globals.js";
+
+import { prisma } from "../../utils/globals.js";
 import {
   generateJwt,
   isPasswordValid,
   validateLoginBody,
-} from "../utils/authUtils.js";
+} from "../../utils/authUtils.js";
 export const authController = Router();
 
 authController.post("/auth/login", validateLoginBody, async (req, res) => {

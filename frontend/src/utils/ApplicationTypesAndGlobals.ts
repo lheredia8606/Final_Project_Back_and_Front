@@ -1,16 +1,17 @@
-import { apiHandler } from "./apiHandler";
+import { apiHandlerThree } from "./apiHandler";
 import { z } from "zod";
 
 //globals
 export const baseUrl2 = "http://localhost:3002/";
 export const baseUrl = "http://localhost:3000/";
-export const apiUser = apiHandler<TUser>(baseUrl2, "users");
-export const apiProducts = apiHandler<TProduct>(baseUrl2, "products");
-export const apiOrders = apiHandler<TOrder>(baseUrl2, "orders");
+export const apiUser = apiHandlerThree<TUser>(baseUrl2, "users");
+export const apiProductsThree = apiHandlerThree<TProduct>(baseUrl2, "products");
+export const apiOrders = apiHandlerThree<TOrder>(baseUrl2, "orders");
 export const phoneInputMaxLength = [3, 3, 4];
 
 //types
 export const userSchema = z.object({
+  id: z.number(),
   firstName: z.string(),
   lastName: z.string(),
   email: z.email(),

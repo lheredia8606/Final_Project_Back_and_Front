@@ -5,31 +5,34 @@ import {
   useEffect,
   useState,
 } from "react";
-import { apiProducts, TProduct } from "../utils/ApplicationTypesAndGlobals";
+import {
+  apiProductsThree,
+  TProduct,
+} from "../utils/ApplicationTypesAndGlobals";
 import { ReactNode } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+// import { getActiveProducts } from "../api/apiProducts";
 
 type TContextProps = {
   allProducts: TProduct[];
-  getProductById: (id: string) => TProduct | undefined;
+  getProductById: (id: number) => TProduct | undefined;
   isFetchingAllProducts: boolean;
   isLoadingAllProducts: boolean;
 };
 const productContext = createContext({} as TContextProps);
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
   const [allProducts, setAllProducts] = useState<TProduct[]>([]);
-
   const {
     data: fetchedProducts,
     isFetching: isFetchingAllProducts,
     isLoading: isLoadingAllProducts,
   } = useQuery({
     queryKey: ["getAllProducts"],
-    queryFn: () => apiProducts.getAll(),
+    queryFn: () => apiProductsThree.getAll(),
   });
 
   const getProductById = useCallback(
-    (id: string): TProduct | undefined => {
+    (id: number): TProduct | undefined => {
       return allProducts.find((product) => {
         return product.id === id;
       });

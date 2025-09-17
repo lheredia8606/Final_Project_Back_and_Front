@@ -17,6 +17,7 @@ export const isPasswordValid = async (
 };
 
 export const generateJwt = ({
+  id,
   email,
   firstName,
   lastName,
@@ -24,6 +25,7 @@ export const generateJwt = ({
   isActive,
 }: User) => {
   const unsecuredUserInfo = {
+    id,
     email,
     firstName,
     lastName,

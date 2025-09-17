@@ -7,7 +7,12 @@ export const getActiveProducts = async (): Promise<TProduct[]> => {
       Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
     },
   });
-  const result = response.json();
+  const result = await response.json();
+  console.log({ result });
   if (!response.ok) {
+    throw new Error(result.message);
   }
+  console.log(result.products);
+
+  return result.products;
 };

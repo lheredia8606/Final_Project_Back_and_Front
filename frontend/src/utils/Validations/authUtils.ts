@@ -3,9 +3,9 @@ import { userSchema } from "../ApplicationTypesAndGlobals";
 import { isTokenValidToday } from "../TemporalDate";
 
 export const getUserFromJwt = (token: string) => {
-  const { success, data: user } = userSchema.safeParse(jwtDecode(token));
-  if (success && isTokenValidToday(user.iat)) {
-    return user;
+  const result = userSchema.safeParse(jwtDecode(token));
+  if (result.success && isTokenValidToday(result.data.iat)) {
+    return result.data;
   }
   return null;
 };

@@ -27,7 +27,7 @@ model User{
 model Products{
   id Int @id @default(autoincrement())
   type ProductType
-  name String
+  name String @unique
   inStock Boolean
   image String
   price Float
@@ -50,9 +50,12 @@ model ProductQty {
   orderId   Int
   productId Int
   qty       Int
-  order   Orders   @relation(fields: [orderId], references: [id])
-  product Products @relation(fields: [productId], references: [id])
+  order   Orders   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@unique([orderId, productId])
 }
+
+
 
 enum Role {
   client
