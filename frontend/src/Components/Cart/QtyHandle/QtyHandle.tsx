@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import "./QtyHandle.css";
 import { useOrder } from "../../../Providers/OrderProvider";
 import { WarningModal } from "../../WarningModal/WarningModal";
-import {
-  getStringFromPlainDate,
-  getTodaysDate,
-} from "../../../utils/TemporalDate";
+
 type TQtyHandleProps = {
-  productId: string;
+  productId: number;
   productQty: number;
-  orderId: string;
+  orderId: number;
 };
 export const QtyHandle = ({
   productId,
@@ -19,7 +16,7 @@ export const QtyHandle = ({
   const [productQtyInput, setProductQtyInput] = useState(1);
   const [shouldDisplayDeleteModal, setShouldDisplayDeleteModal] =
     useState<boolean>(false);
-  const { removeProductFromOrder, changeProductQtyInOrder } = useOrder();
+  const { changeProductQtyInOrder } = useOrder();
 
   const changeQty = (qty: number) => {
     const newQty = productQtyInput + qty;
@@ -42,7 +39,7 @@ export const QtyHandle = ({
             setShouldDisplayDeleteModal(false);
           }}
           onConfirm={() => {
-            removeProductFromOrder(orderId, productId);
+            changeProductQtyInOrder(orderId, productId, -productQty);
             setShouldDisplayDeleteModal(false);
           }}
         />

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrderHistory")({
 });
 
 function RouteComponent() {
-  const { allOrders, isFetchingAllOrders } = useOrder();
+  const { currenUserOrders: allOrders, isFetchingAllOrders } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
 

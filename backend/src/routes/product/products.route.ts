@@ -12,12 +12,10 @@ import {
   isProductPatchBodyValid,
 } from "./product.utils.js";
 import { validateIdParam } from "../generalUtils.js";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 export const productController = Router();
 
 productController.get(
   "/products",
-  isTokenValid,
   isGetQueryValid,
   async (req: AuthenticatedRequest, res) => {
     const { inStock } = req.query;

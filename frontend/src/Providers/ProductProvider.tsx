@@ -5,13 +5,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  apiProductsThree,
-  TProduct,
-} from "../utils/ApplicationTypesAndGlobals";
+import { TProduct } from "../utils/ApplicationTypesAndGlobals";
 import { ReactNode } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-// import { getActiveProducts } from "../api/apiProducts";
+import { apiHandler } from "../api/apiHandler";
 
 type TContextProps = {
   allProducts: TProduct[];
@@ -21,6 +18,7 @@ type TContextProps = {
 };
 const productContext = createContext({} as TContextProps);
 export const ProductProvider = ({ children }: { children: ReactNode }) => {
+  const productApi = apiHandler<TProduct>("products");
   const [allProducts, setAllProducts] = useState<TProduct[]>([]);
   const {
     data: fetchedProducts,
@@ -28,7 +26,7 @@ export const ProductProvider = ({ children }: { children: ReactNode }) => {
     isLoading: isLoadingAllProducts,
   } = useQuery({
     queryKey: ["getAllProducts"],
-    queryFn: () => apiProductsThree.getAll(),
+    queryFn: () => productApi.getAll(),
   });
 
   const getProductById = useCallback(

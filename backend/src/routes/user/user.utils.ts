@@ -1,9 +1,9 @@
 import { hash, compare } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
-import { email, z } from "zod";
+import { z, ZodError } from "zod";
 import jwt from "jsonwebtoken";
-import { User } from "../../generated/prisma/index.js";
-import { jwtSecret } from "./globals.js";
+import { User } from "../../../generated/prisma/index.js";
+import { jwtSecret } from "../../utils/globals.js";
 
 export const getPasswordHash = async (password: string) => {
   return await hash(password, 11);
@@ -57,4 +57,26 @@ export const validateLoginBody = (
   }
   req.body = result.data;
   next();
+};
+
+const userOrdersSchema = z
+  .object({
+    userId: z.coerce.number().int("userId must be a integer"),
+  })
+  .strict();
+export const validateUserOrdersParams = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    userOrdersSchema.parse(req.params);
+    next();
+  } catch (error) {
+    let message = "Unknown error";
+    if (error instanceof ZodError) {
+      message = error.issues[0]?.message || "Unknown error";
+    }
+    return res.status(400).json({ message });
+  }
 };

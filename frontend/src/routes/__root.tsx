@@ -9,6 +9,7 @@ import { useUser } from "../Providers/UserProvider";
 import "../styles/root/root-style.css";
 import { useEffect } from "react";
 import { getUserFromJwt } from "../utils/Validations/authUtils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -16,6 +17,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
   const { authenticatedUser, setAuthenticatedUser } = useUser();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const goToMyPage = () => {
     if (!authenticatedUser) {
@@ -69,6 +71,7 @@ function RootComponent() {
                 <a
                   href="#"
                   onClick={() => {
+                    queryClient.clear();
                     localStorage.removeItem("userJwt");
                     setAuthenticatedUser(null);
                   }}
@@ -78,15 +81,7 @@ function RootComponent() {
               </li>
             ) : (
               <li>
-                <Link
-                  to="/login"
-                  activeProps={{
-                    className: "font-bold",
-                  }}
-                  activeOptions={{ exact: true }}
-                >
-                  Log in
-                </Link>
+                <Link to="/login">Log in</Link>
               </li>
             )}
           </ul>

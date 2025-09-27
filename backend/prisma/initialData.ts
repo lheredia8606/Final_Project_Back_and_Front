@@ -36,6 +36,16 @@ export const users: User[] = [
     phone: "813 564 0214",
     isActive: true,
   },
+  {
+    id: 4,
+    firstName: "John",
+    lastName: "Smit",
+    email: "client2@gmail.com",
+    passwordHash: "a",
+    role: "client",
+    phone: "813 500  2587",
+    isActive: true,
+  },
 ];
 
 export const products: Products[] = [
@@ -44,7 +54,7 @@ export const products: Products[] = [
     type: "bag",
     name: "some name 1",
     inStock: true,
-    image: "/public/images/bag-01.png",
+    image: "/images/bag-01.png",
     price: 6.99,
   },
   {
@@ -52,7 +62,7 @@ export const products: Products[] = [
     type: "mug",
     name: "some name 2",
     inStock: true,
-    image: "/public/images/couple-2.png",
+    image: "/images/couple-2.png",
     price: 25.99,
   },
   {
@@ -60,7 +70,7 @@ export const products: Products[] = [
     type: "bag",
     name: "some name 3",
     inStock: false,
-    image: "/public/images/bag-02.png",
+    image: "/images/bag-02.png",
     price: 4.99,
   },
   {
@@ -68,7 +78,7 @@ export const products: Products[] = [
     type: "t_Shirt",
     name: "some name 4",
     inStock: true,
-    image: "/public/images/my-heart-belongs-to-him.png",
+    image: "/images/my-heart-belongs-to-him.png",
     price: 19.99,
   },
 ];

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_admin/adminPage/UnassignedOrders")({
 });
 
 function RouteComponent() {
-  const { allOrders } = useOrder();
+  const { currenUserOrders: allOrders } = useOrder();
   const { setActiveBtn } = useActiveBtn();
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");

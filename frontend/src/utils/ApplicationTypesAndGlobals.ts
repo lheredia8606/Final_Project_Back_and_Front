@@ -1,12 +1,11 @@
-import { apiHandlerThree } from "./apiHandler";
 import { z } from "zod";
+import { apiHandler } from "../api/apiHandler";
 
 //globals
-export const baseUrl2 = "http://localhost:3002/";
 export const baseUrl = "http://localhost:3000/";
-export const apiUser = apiHandlerThree<TUser>(baseUrl2, "users");
-export const apiProductsThree = apiHandlerThree<TProduct>(baseUrl2, "products");
-export const apiOrders = apiHandlerThree<TOrder>(baseUrl2, "orders");
+export const orderApi = apiHandler<TOrder>("orders");
+export const userApi = apiHandler<TUser>("user");
+
 export const phoneInputMaxLength = [3, 3, 4];
 
 //types
@@ -16,13 +15,19 @@ export const userSchema = z.object({
   lastName: z.string(),
   email: z.email(),
   role: z.enum(["client", "worker", "admin"]),
-  iat: z.int(),
+  password: z.string(),
 });
 
 export type TUser = z.infer<typeof userSchema>;
 
+export const tokenSchema = userSchema.omit({ password: true }).extend({
+  iat: z.number().int(),
+});
+
+export type TUserToken = z.infer<typeof tokenSchema>;
+
 export const productSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   name: z.string(),
   type: z.enum(["mug", "t_shirt", "bag"]),
   image: z.string(),
@@ -31,19 +36,24 @@ export const productSchema = z.object({
 });
 export type TProduct = z.infer<typeof productSchema>;
 
-export type TOrderProductQty = {
-  productId: string;
-  quantity: number;
-};
+export const TOrderProductQtySchema = z.object({
+  productId: z.number(),
+  qty: z.number(),
+});
+
+export type TProductQty = z.infer<typeof TOrderProductQtySchema>;
 
 export const orderSchema = z.object({
-  id: z.string(),
-  clientId: z.string(),
-  workerId: z.string().nullable(),
-  deadLine: z.string().nullable(),
+  id: z.number(),
+  clientId: z.number(),
+  workerId: z.number().nullable().optional(),
+  deadLine: z.string().nullable().optional(),
+  productQty: z.array(TOrderProductQtySchema).optional(),
   status: z.enum(["in_cart", "ordered", "processing", "ready", "done"]),
 });
 export type TOrder = z.infer<typeof orderSchema>;
+
+export type TOrderStatus = TOrder["status"];
 
 export type TButtonProps = {
   btnText: string;

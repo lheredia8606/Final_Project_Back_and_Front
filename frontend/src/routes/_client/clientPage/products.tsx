@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useProducts } from "../../../Providers/ProductProvider";
 import { ProductCard } from "../../../Components/ProductCard/ProductCard";
 import { useOrder } from "../../../Providers/OrderProvider";
 import { SpinnerModal } from "../../../Components/SpinnerModal/SpinnerModal";
 import { useActiveBtn } from "../../../Providers/ActiveBtnProvider";
+import { useUser } from "../../../Providers/UserProvider";
 
 export const Route = createFileRoute("/_client/clientPage/products")({
   component: RouteComponent,
@@ -15,7 +16,9 @@ function RouteComponent() {
   const [modalImage, setModalImage] = useState("");
   const { allProducts, isFetchingAllProducts, isLoadingAllProducts } =
     useProducts();
-  const { addProductToOrder: addProductToCart } = useOrder();
+  const router = useRouter();
+  const { changeProductQtyInOrder, userCart } = useOrder();
+  const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
   const handleCloseModal = () => {
     setIsModalOpen(false); // Close modal
@@ -42,7 +45,12 @@ function RouteComponent() {
               buttonClass="add-to-cart-btn"
               buttonValue="Add to Cart"
               onBtnClickAction={() => {
-                addProductToCart(product.id);
+                if (!authenticatedUser) {
+                  router.navigate({ to: "/login" });
+                }
+                if (userCart) {
+                  changeProductQtyInOrder(userCart.id, product.id, 1);
+                }
               }}
             />
           );

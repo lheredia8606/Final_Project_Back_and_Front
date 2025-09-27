@@ -9,7 +9,8 @@ export const getFormattedDate = (date: Temporal.PlainDate): string => {
 };
 
 export const getDateFromString = (date: string): Temporal.PlainDate => {
-  return Temporal.PlainDate.from(date);
+  const plainDateStr = date.split("T")[0];
+  return Temporal.PlainDate.from(plainDateStr);
 };
 
 export const getStringFromPlainDate = (

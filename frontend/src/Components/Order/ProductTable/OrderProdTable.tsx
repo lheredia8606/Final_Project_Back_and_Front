@@ -22,7 +22,7 @@ export const OrderProdTable = ({ productQuantities }: TOrderProdTableProps) => {
                 return (
                   <tr key={pQty.productId}>
                     <td>{getProductById(pQty.productId)?.name}</td>
-                    <td className="centered">{pQty.qty}</td>
+                    <td className="centered">{pQty.quantity}</td>
                   </tr>
                 );
               })}

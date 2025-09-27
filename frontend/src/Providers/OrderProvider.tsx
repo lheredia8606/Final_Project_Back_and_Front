@@ -1,62 +1,87 @@
 import { ReactNode } from "@tanstack/react-router";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
-  apiOrders,
+  orderApi,
   TOrder,
-  TOrderProductQty,
   TOrderStatus,
 } from "../utils/ApplicationTypesAndGlobals";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "./UserProvider";
 import { Temporal } from "@js-temporal/polyfill";
+import { apiHandler } from "../api/apiHandler";
+import {
+  getAllUserOrders,
+  modifyProductQtyInOrder,
+} from "../api/specificApi.ts/specificOrderApi";
+import { getUserCart } from "../api/specificApi.ts/specificUserApi";
+
+const apiOrders = apiHandler<TOrder>("orders/");
 
 type TOrderContextProps = {
   sortOrdersByDeadline: (orders: TOrder[], modifier?: 1 | -1) => TOrder[];
   getOrdersByStatus: (status: TOrderStatus) => TOrder[];
-  allOrders: TOrder[];
-  setAllOrders: (newOrders: TOrder[]) => void;
+  currenUserOrders: TOrder[];
+  setCurrenUserOrders: (newOrders: TOrder[]) => void;
+  userCart: TOrder | undefined;
+  setUserCart: (order: TOrder | undefined) => void;
   isAllOrdersFetchError: boolean;
   allOrdersFetchError: Error | null;
   isLoadingFetchAllOrders: boolean;
   isFetchingAllOrders: boolean;
-  getUserOrders: (userId: string | null) => TOrder[];
-  removeProductFromOrder: (orderId: string, productId: string) => void;
-  addProductToOrder: (productId: string, orderId?: string) => void;
   changeProductQtyInOrder: (
-    orderId: string,
-    productId: string,
+    orderId: number,
+    productId: number,
     qty: number
   ) => void;
   changeOrder: (
-    orderId: string,
+    orderId: number,
     partialOrder: Partial<Omit<TOrder, "id">>
   ) => void;
   addOrder: (newOrder: Omit<TOrder, "id">) => void;
 };
-const OrderContext = createContext<TOrderContextProps>(
-  {} as TOrderContextProps
-);
+const OrderContext = createContext<TOrderContextProps | undefined>(undefined);
 
 export const OrderProvider = ({ children }: { children: ReactNode }) => {
+  const [currenUserOrders, setCurrenUserOrders] = useState<TOrder[]>([]);
+  const [userCart, setUserCart] = useState<TOrder | undefined>(undefined);
   const queryClient = useQueryClient();
   const { authenticatedUser } = useUser();
-  const [allOrders, setAllOrders] = useState<TOrder[]>([]);
 
   const {
-    data: fetchedOrders,
+    data: fetchedUserOrders,
     isError: isAllOrdersFetchError,
     error: allOrdersFetchError,
     isLoading: isLoadingFetchAllOrders,
     isFetching: isFetchingAllOrders,
   } = useQuery({
-    queryKey: ["getAllOrders"],
-    queryFn: () => apiOrders.getAll(),
+    queryKey: ["getAllUserOrders"],
+    queryFn: () => getAllUserOrders(),
+    enabled: !!authenticatedUser,
   });
 
+  const { data: fetchedUserCart } = useQuery({
+    queryKey: ["getUserCart"],
+    queryFn: () => getUserCart(),
+    enabled: !!authenticatedUser,
+  });
+  useEffect(() => {
+    if (!fetchedUserCart && authenticatedUser) {
+      const newOrder: Omit<TOrder, "id"> = {
+        clientId: authenticatedUser.id,
+        status: "in_cart",
+      };
+      addOrderMutation.mutate(newOrder, {
+        onSuccess: (order) => setUserCart(order),
+      });
+    } else {
+      setUserCart(fetchedUserCart);
+    }
+  }, [fetchedUserCart]);
+
   const addOrderMutation = useMutation({
-    mutationFn: (order: Omit<TOrder, "id">) => apiOrders.post(order),
+    mutationFn: (order: Omit<TOrder, "id">) => apiOrders.create(order),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["getAllOrders"] }),
+      queryClient.invalidateQueries({ queryKey: ["getAllUserOrders"] }),
   });
 
   const patchOrder = useMutation({
@@ -64,43 +89,15 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
       orderId,
       partialOrder,
     }: {
-      orderId: string;
+      orderId: number;
       partialOrder: Partial<Omit<TOrder, "id">>;
-    }) => apiOrders.update(orderId, partialOrder),
+    }) => orderApi.update(orderId, partialOrder),
     onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["getAllOrders"] }),
+      queryClient.invalidateQueries({ queryKey: ["getAllUserOrders"] }),
   });
 
-  const getUserCartOnAuth = () => {
-    if (authenticatedUser) {
-      const cartOrder = allOrders.find((order) => {
-        return (
-          order.clientId === authenticatedUser.id && order.status === "in_cart"
-        );
-      });
-      if (!cartOrder) {
-        const newOrder: Omit<TOrder, "id"> = {
-          clientId: authenticatedUser.id,
-          deadLine: null,
-          status: "in_cart",
-          workerId: null,
-        };
-        addOrderMutation.mutate(newOrder);
-      }
-    }
-  };
-
-  const getUserOrders = (userId: string | null) => {
-    if (userId) {
-      return allOrders?.filter((order) => {
-        return order.clientId === authenticatedUser?.id;
-      });
-    }
-    return [];
-  };
-
   const getOrdersByStatus = (status: TOrderStatus) => {
-    return allOrders.filter((order) => {
+    return currenUserOrders.filter((order) => {
       return order.status === status;
     });
   };
@@ -117,82 +114,28 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  const removeProductFromOrder = (orderId: string, productId: string) => {
-    const orderProducts = allOrders.find(
-      (order) => order.id === orderId
-    )?.productQty;
-    if (!orderProducts) {
-      throw new Error("No products found!");
-    }
-    let newOrderProducts: TOrderProductQty[] = [];
-    for (let i = 0; i < orderProducts.length; i++) {
-      if (orderProducts[i].productId === productId) {
-        newOrderProducts = orderProducts.slice(0, i);
-        newOrderProducts.push(...orderProducts.slice(i + 1));
-      }
-    }
-    const partialOrder: Partial<Omit<TOrder, "id">> = {};
-    partialOrder.productQty = newOrderProducts;
-    patchOrder.mutate({ orderId, partialOrder });
-  };
-
   const changeProductQtyInOrder = (
-    orderId: string,
-    productId: string,
+    orderId: number,
+    productId: number,
     qty: number
   ) => {
-    let orderProducts = allOrders.find(
-      (order) => order.id === orderId
-    )?.productQty;
-    if (!orderProducts) {
-      throw new Error("No products found!");
-    }
-
-    for (let i = 0; i < orderProducts.length; i++) {
-      if (orderProducts[i].productId === productId) {
-        orderProducts[i].quantity += qty;
-        if (orderProducts[i].quantity < 1) {
-          let newOrderProducts = orderProducts.slice(0, i);
-          newOrderProducts.push(...orderProducts.slice(i + 1));
-          orderProducts = newOrderProducts;
-        }
-      }
-    }
-    const partialOrder: Partial<Omit<TOrder, "id">> = {};
-    partialOrder.productQty = orderProducts;
-    patchOrder.mutate({ orderId, partialOrder });
-  };
-
-  const addProductToOrder = (productId: string, orderId?: string) => {
-    let products: TOrderProductQty[] | undefined = [];
-    if (orderId) {
-      products = allOrders.find((order) => order.id === orderId)?.productQty;
-    } else if (authenticatedUser) {
-      const order = allOrders.find(
-        (order) =>
-          order.clientId === authenticatedUser.id && order.status === "in_cart"
-      );
-      products = order?.productQty;
-      orderId = order?.id;
-    }
-    if (products) {
-      let haveProduct: boolean = false;
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].productId === productId) {
-          products[i].quantity++;
-          haveProduct = true;
-          break;
-        }
-      }
-      if (!haveProduct) {
-        products.push({ productId, quantity: 1 });
-      }
-      if (orderId) {
-        const newOrder: Partial<Omit<TOrder, "id">> = {};
-        newOrder.productQty = products;
-        patchOrder.mutate({ orderId, partialOrder: newOrder });
-      }
-    }
+    if (!userCart || !userCart.productQty) return;
+    setUserCart((prev) => ({
+      ...prev!,
+      productQty: prev!.productQty!.map((p) =>
+        p.productId === productId ? { ...p, qty: p.qty + qty } : p
+      ),
+    }));
+    modifyProductQtyInOrder(orderId, productId, qty)
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ["getUserCart"] });
+        queryClient.invalidateQueries({ queryKey: ["getAllUserOrders"] });
+      })
+      .catch((err) => {
+        console.error("Failed to update product quantity:", err);
+        queryClient.invalidateQueries({ queryKey: ["getUserCart"] });
+        queryClient.invalidateQueries({ queryKey: ["getAllUserOrders"] });
+      });
   };
 
   const addOrder = (newOrder: Omit<TOrder, "id">) => {
@@ -200,34 +143,29 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const changeOrder = (
-    orderId: string,
+    orderId: number,
     partialOrder: Partial<Omit<TOrder, "id">>
   ) => {
     patchOrder.mutate({ orderId, partialOrder });
   };
 
   useEffect(() => {
-    if (fetchedOrders) {
-      setAllOrders(fetchedOrders);
+    if (fetchedUserOrders) {
+      setCurrenUserOrders(fetchedUserOrders);
     }
-  }, [fetchedOrders]);
-
-  useEffect(() => {
-    getUserCartOnAuth();
-  }, [authenticatedUser]);
+  }, [fetchedUserOrders]);
 
   return (
     <OrderContext.Provider
       value={{
-        allOrders,
+        currenUserOrders,
+        setCurrenUserOrders,
+        userCart,
+        setUserCart,
         sortOrdersByDeadline,
-        setAllOrders,
         allOrdersFetchError,
         isAllOrdersFetchError,
         isLoadingFetchAllOrders,
-        addProductToOrder,
-        getUserOrders,
-        removeProductFromOrder,
         changeProductQtyInOrder,
         changeOrder,
         addOrder,

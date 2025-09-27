@@ -12,7 +12,11 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrders")({
 });
 
 function RouteComponent() {
-  const { allOrders, changeOrder, isFetchingAllOrders } = useOrder();
+  const {
+    currenUserOrders: allOrders,
+    changeOrder,
+    isFetchingAllOrders,
+  } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
   const myOrders = allOrders.filter((order) => {

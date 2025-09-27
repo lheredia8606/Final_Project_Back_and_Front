@@ -1,15 +1,11 @@
-import "../../../styles/root/root-style.css";
+// import "../../../styles/root/root-style.css";
 import { createFileRoute } from "@tanstack/react-router";
 import { useProducts } from "../../../Providers/ProductProvider";
 import { ProductCard } from "../../../Components/ProductCard/ProductCard";
 import React, { useEffect, useState } from "react";
 import { useOrder } from "../../../Providers/OrderProvider";
 import { WarningModal } from "../../../Components/WarningModal/WarningModal";
-import { useUser } from "../../../Providers/UserProvider";
-import {
-  TOrder,
-  TOrderProductQty,
-} from "../../../utils/ApplicationTypesAndGlobals";
+import { TProductQty } from "../../../utils/ApplicationTypesAndGlobals";
 import { UserCartHeader } from "../../../Components/Cart/UserCartHeader/UserCartHeader";
 import { QtyHandle } from "../../../Components/Cart/QtyHandle/QtyHandle";
 import { SpinnerModal } from "../../../Components/SpinnerModal/SpinnerModal";
@@ -21,20 +17,19 @@ export const Route = createFileRoute("/_client/clientPage/myCart")({
 
 function RouteComponent() {
   const {
-    removeProductFromOrder,
-    allOrders,
     isLoadingFetchAllOrders,
     isFetchingAllOrders,
+    userCart,
+    changeProductQtyInOrder,
   } = useOrder();
   const { setActiveBtn } = useActiveBtn();
   const { getProductById } = useProducts();
-  const { authenticatedUser } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImage, setModalImage] = useState("");
   const [idProductToDelete, setIdProductToDelete] = useState("");
-  const [cartId, setCartId] = useState<string>("");
+  const [cartId, setCartId] = useState<number | null>(null);
   const [idOrderToDelete, setIdOrderToDelete] = useState("");
-  const [cartProducts, setCartProducts] = useState<TOrderProductQty[]>([]);
+  const [cartProducts, setCartProducts] = useState<TProductQty[]>([]);
   const [shouldDisplayDeleteModal, setShouldDisplayDeleteModal] =
     useState<boolean>(false);
   const handleCloseModal = () => {
@@ -46,25 +41,17 @@ function RouteComponent() {
   }, []);
 
   useEffect(() => {
-    let userCart: TOrder | undefined;
-    if (authenticatedUser) {
-      userCart = allOrders.find((order) => {
-        return (
-          order.clientId === authenticatedUser.id && order.status === "in_cart"
-        );
-      });
-      if (userCart) {
-        setCartProducts(userCart.productQty);
-        setCartId(userCart.id);
-      }
+    if (userCart) {
+      setCartProducts(userCart.productQty || []);
+      setCartId(userCart.id);
     }
-  }, [allOrders]);
+  }, [userCart]);
 
   if (isLoadingFetchAllOrders || isFetchingAllOrders) {
     return <SpinnerModal />;
   }
 
-  if (cartId === "") {
+  if (cartId === null) {
     return (
       <div className="empty-container">
         <h2>No cartFound!</h2>
@@ -82,9 +69,9 @@ function RouteComponent() {
 
   return (
     <>
-      <UserCartHeader cartId={cartId} cartProducts={cartProducts} />
+      <UserCartHeader />
       <div className="card-container">
-        {cartProducts.map(({ productId, quantity }) => {
+        {cartProducts.map(({ productId, qty }) => {
           const product = getProductById(productId);
 
           return (
@@ -94,7 +81,11 @@ function RouteComponent() {
                   message="Are you sure you want to remove this item from your cart?"
                   onCancel={() => setShouldDisplayDeleteModal(false)}
                   onConfirm={() => {
-                    removeProductFromOrder(idOrderToDelete, idProductToDelete);
+                    changeProductQtyInOrder(
+                      Number(idOrderToDelete),
+                      Number(idProductToDelete),
+                      -qty
+                    );
                     setShouldDisplayDeleteModal(false);
                   }}
                 />
@@ -108,14 +99,14 @@ function RouteComponent() {
                     buttonClass="remove"
                     buttonValue="Remove"
                     onBtnClickAction={() => {
-                      setIdOrderToDelete(cartId);
-                      setIdProductToDelete(product.id);
+                      setIdOrderToDelete(cartId.toString());
+                      setIdProductToDelete(product.id.toString());
                       setShouldDisplayDeleteModal(true);
                     }}
                   />
                   <QtyHandle
                     productId={productId}
-                    productQty={quantity}
+                    productQty={qty}
                     orderId={cartId}
                   />
                 </div>

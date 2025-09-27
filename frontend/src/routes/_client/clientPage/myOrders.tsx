@@ -4,8 +4,7 @@ import { useOrder } from "../../../Providers/OrderProvider";
 import { SpinnerModal } from "../../../Components/SpinnerModal/SpinnerModal";
 import { ErrorModal } from "../../../Components/ErrorModal/ErrorModal";
 import { useUser } from "../../../Providers/UserProvider";
-import { useEffect, useState } from "react";
-import { TOrder } from "../../../utils/ApplicationTypesAndGlobals";
+import { useEffect } from "react";
 import { useActiveBtn } from "../../../Providers/ActiveBtnProvider";
 
 export const Route = createFileRoute("/_client/clientPage/myOrders")({
@@ -14,8 +13,7 @@ export const Route = createFileRoute("/_client/clientPage/myOrders")({
 
 function RouteComponent() {
   const {
-    allOrders,
-    getUserOrders,
+    currenUserOrders: allOrders,
     allOrdersFetchError,
     isAllOrdersFetchError,
     isLoadingFetchAllOrders,
@@ -23,17 +21,10 @@ function RouteComponent() {
   } = useOrder();
   const { setActiveBtn } = useActiveBtn();
   const { authenticatedUser } = useUser();
-  const [currentUserOrders, setCurrentUsersOrders] = useState<TOrder[]>([]);
 
   useEffect(() => {
     setActiveBtn("My Orders");
   }, []);
-
-  useEffect(() => {
-    if (authenticatedUser) {
-      setCurrentUsersOrders(getUserOrders(authenticatedUser.id));
-    }
-  }, [allOrders]);
   if (isLoadingFetchAllOrders || isFetchingAllOrders) {
     return <SpinnerModal />;
   }
@@ -42,11 +33,9 @@ function RouteComponent() {
       <ErrorModal message={allOrdersFetchError!.message} onClose={() => {}} />
     );
   }
-
-  currentUserOrders;
   return (
     <>
-      {currentUserOrders.map((order) => (
+      {allOrders.map((order) => (
         <OrderCard key={order.id} order={order}>
           <button className="order-btn">View Order</button>
         </OrderCard>

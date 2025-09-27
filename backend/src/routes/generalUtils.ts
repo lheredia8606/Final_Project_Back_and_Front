@@ -10,7 +10,7 @@ export const validateIdParam = (
   next: NextFunction
 ) => {
   try {
-    const { id } = paramsSchema.parse(req.params);
+    paramsSchema.parse(req.params);
     next();
   } catch (e) {
     return res.status(400).json({ message: "Invalid parameters" });

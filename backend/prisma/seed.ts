@@ -1,4 +1,4 @@
-import { getPasswordHash } from "../src/utils/authUtils.js";
+import { getPasswordHash } from "../src/routes/user/user.utils.js";
 import { prisma } from "../src/utils/globals.js";
 import { orders, productQty, products, users } from "./initialData.js";
 

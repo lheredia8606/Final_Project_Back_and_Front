@@ -8,6 +8,7 @@ export const prisma = new PrismaClient();
 export const jwtSecret = "super-secret";
 
 const userSchema = z.object({
+  id: z.number(),
   email: z.email(),
   firstName: z.string(),
   lastName: z.string(),
@@ -42,7 +43,6 @@ export const isTokenValid = async (
 ) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
-    console.log("change error message and erase console.log");
     return res.status(401).json({ message: "Unauthorized (no token)" });
   }
   const jwtToken = authHeader.split(" ")[1];

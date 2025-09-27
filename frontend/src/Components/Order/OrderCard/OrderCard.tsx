@@ -10,12 +10,10 @@ import "./OrderCard.css";
 
 type TOrderCardProps = {
   order: TOrder;
-  productQty: TProductQty[];
   children: ReactNode;
 };
 export const OrderCard = ({
-  order: { id, status, deadLine },
-  productQty,
+  order: { id, status, deadLine, productQty },
   children,
 }: TOrderCardProps) => {
   const getStatusClassName = (): string => {
@@ -63,7 +61,7 @@ export const OrderCard = ({
             <span className="deadline-time">{getDeadLineText(deadLine)}</span>
           </p>
         </div>
-        <OrderProdTable productQuantities={productQty} />
+        <OrderProdTable productQuantities={productQty || []} />
         {children}
       </div>
     </>
