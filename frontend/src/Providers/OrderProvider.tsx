@@ -119,7 +119,9 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     productId: number,
     qty: number
   ) => {
-    if (!userCart || !userCart.productQty) return;
+    if (!userCart) return;
+    userCart.productQty = userCart.productQty || [];
+
     setUserCart((prev) => ({
       ...prev!,
       productQty: prev!.productQty!.map((p) =>

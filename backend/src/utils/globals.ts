@@ -16,9 +16,31 @@ const userSchema = z.object({
   isActive: z.boolean(),
   iat: z.number(),
 });
-
 export interface AuthenticatedRequest extends Request {
   user?: z.infer<typeof userSchema>;
+}
+
+export const orderSchema = z.object({
+  id: z.coerce.number().int("order id should be a integer"),
+  clientId: z.coerce.number().int("client id should be a integer"),
+  workerId: z.coerce.number().int("worker id should be a integer"),
+  deadLine: z.string(),
+  status: z.enum(["in_cart", "ordered", "processing", "ready"]),
+  productQty: z.array(
+    z.object({
+      productId: z.coerce.number().int("product id should be a integer"),
+      qty: z.coerce.number().int("product id should be a integer"),
+    })
+  ),
+});
+
+export const orderSchemaPartial = orderSchema
+  .omit({ productQty: true })
+  .partial()
+  .strict();
+
+export interface AuthReqPatchOrder extends AuthenticatedRequest {
+  product?: z.infer<typeof orderSchemaPartial>;
 }
 
 /**

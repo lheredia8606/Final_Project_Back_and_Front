@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
+import { AuthReqPatchOrder, orderSchemaPartial } from "../../utils/globals.js";
 
 const orderModifyProductsParamsSchema = z
   .object({
@@ -49,6 +50,24 @@ export const isPostOrderBodyValid = (
 ) => {
   try {
     createOrderSchema.parse(req.body);
+    next();
+  } catch (error) {
+    let message = "Unknown error validating the request";
+    if (error instanceof ZodError) {
+      message = error.issues[0]?.message || "Unknown zod error";
+    }
+    return res.status(400).json({ message });
+  }
+};
+
+export const isPatchBodyValid = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const parsedBody = orderSchemaPartial.parse(req.body);
+    (req as AuthReqPatchOrder).product = parsedBody;
     next();
   } catch (error) {
     let message = "Unknown error validating the request";

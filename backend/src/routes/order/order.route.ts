@@ -1,12 +1,14 @@
 import { Router } from "express";
 import {
   AuthenticatedRequest,
+  AuthReqPatchOrder,
   isTokenValid,
   prisma,
 } from "../../utils/globals.js";
 import { Prisma } from "../../../generated/prisma/index.js";
 import { validateIdParam } from "../generalUtils.js";
 import {
+  isPatchBodyValid,
   isPostOrderBodyValid,
   verifyModifyOrderProductsQuery,
 } from "./order.utils.js";
@@ -51,6 +53,7 @@ orderController.post(
   verifyModifyOrderProductsQuery,
   async (req: AuthenticatedRequest, res) => {
     try {
+      console.log("product added in oder route");
       const orderId = Number(req.params.orderId);
       const productId = Number(req.params.productId);
       const qty = req.body.qty;
@@ -134,6 +137,63 @@ orderController.get(
         message = error.message;
       }
       return res.status(404).json({ message });
+    }
+  }
+);
+
+/**
+ * @queryBody A partial TOrder object excluding `id` and `productQty`.
+ * @queryParams The ID of the order to be patched.
+ *
+ * Modifies an order in the database.
+ */
+orderController.patch(
+  "/orders/:orderId",
+  isTokenValid,
+  isPatchBodyValid,
+  async (req: AuthReqPatchOrder, res) => {
+    const orderId = Number(req.params.orderId);
+    const { role, id: userId } = req.user!;
+    const { id, ...incomingOrder } = req.product!;
+    incomingOrder.deadLine = incomingOrder.deadLine
+      ? `${incomingOrder.deadLine}T00:00:00.000Z`
+      : undefined;
+    const cleanedData = Object.fromEntries(
+      Object.entries(incomingOrder).filter(([_, value]) => value !== undefined)
+    );
+
+    try {
+      const order = await prisma.orders.findFirst({
+        where: {
+          id: orderId,
+        },
+      });
+      if (!order) {
+        return res.status(404).json({ message: "No order found!" });
+      }
+      if (order.clientId !== userId && role === "client") {
+        return res
+          .status(403)
+          .json({ message: "A client only can change his own orders!" });
+      }
+      const patchedOrder = await prisma.orders.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          ...cleanedData,
+        },
+      });
+      return res.status(200).json({ data: patchedOrder });
+    } catch (error) {
+      console.log({ error });
+      console.log("error occurred patching order");
+
+      let message = "Unknown error patching order";
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        message = `Prisma error patching order code ${error.code}`;
+      }
+      res.status(500).json({ message });
     }
   }
 );
