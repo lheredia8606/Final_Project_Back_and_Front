@@ -12,9 +12,8 @@ export const UserCartHeader = () => {
   const {
     userCart,
     changeOrder,
-    addOrder,
-    isLoadingFetchAllOrders,
-    isFetchingAllOrders,
+    isFetchingUserOrders,
+    isLoadingFetchUserOrders,
   } = useOrder();
   const cartProducts = userCart?.productQty || [];
   const cartId = userCart?.id;
@@ -23,10 +22,10 @@ export const UserCartHeader = () => {
   }, 0);
 
   useEffect(() => {
-    if (!isFetchingAllOrders && !isLoadingFetchAllOrders) {
+    if (!isFetchingUserOrders && !isLoadingFetchUserOrders) {
       setIsLoading(false);
     }
-  }, [isFetchingAllOrders]);
+  }, [isFetchingUserOrders]);
 
   const onPayClick = () => {
     if (cartId) {

@@ -24,10 +24,10 @@ type TOrderContextProps = {
   setCurrenUserOrders: (newOrders: TOrder[]) => void;
   userCart: TOrder | undefined;
   setUserCart: (order: TOrder | undefined) => void;
-  isAllOrdersFetchError: boolean;
-  allOrdersFetchError: Error | null;
-  isLoadingFetchAllOrders: boolean;
-  isFetchingAllOrders: boolean;
+  isUserOrdersFetchError: boolean;
+  userOrdersFetchError: Error | null;
+  isLoadingFetchUserOrders: boolean;
+  isFetchingUserOrders: boolean;
   changeProductQtyInOrder: (
     orderId: number,
     productId: number,
@@ -49,10 +49,10 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
 
   const {
     data: fetchedUserOrders,
-    isError: isAllOrdersFetchError,
-    error: allOrdersFetchError,
-    isLoading: isLoadingFetchAllOrders,
-    isFetching: isFetchingAllOrders,
+    isError: isUserOrdersFetchError,
+    error: userOrdersFetchError,
+    isLoading: isLoadingFetchUserOrders,
+    isFetching: isFetchingUserOrders,
   } = useQuery({
     queryKey: ["getAllUserOrders"],
     queryFn: () => getAllUserOrders(),
@@ -165,14 +165,14 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
         userCart,
         setUserCart,
         sortOrdersByDeadline,
-        allOrdersFetchError,
-        isAllOrdersFetchError,
-        isLoadingFetchAllOrders,
+        userOrdersFetchError,
+        isUserOrdersFetchError,
         changeProductQtyInOrder,
         changeOrder,
         addOrder,
-        isFetchingAllOrders,
         getOrdersByStatus,
+        isFetchingUserOrders,
+        isLoadingFetchUserOrders,
       }}
     >
       {children}

@@ -16,7 +16,7 @@ function RouteComponent() {
     if (!authenticatedUser || authenticatedUser.role !== "admin") {
       route.navigate({ to: "/" });
     }
-  });
+  }, [authenticatedUser]);
   return (
     <>
       <ActiveBtnProvider>

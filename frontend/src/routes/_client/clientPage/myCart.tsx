@@ -17,8 +17,8 @@ export const Route = createFileRoute("/_client/clientPage/myCart")({
 
 function RouteComponent() {
   const {
-    isLoadingFetchAllOrders,
-    isFetchingAllOrders,
+    isLoadingFetchUserOrders,
+    isFetchingUserOrders,
     userCart,
     changeProductQtyInOrder,
   } = useOrder();
@@ -47,7 +47,7 @@ function RouteComponent() {
     }
   }, [userCart]);
 
-  if (isLoadingFetchAllOrders || isFetchingAllOrders) {
+  if (isLoadingFetchUserOrders || isFetchingUserOrders) {
     return <SpinnerModal />;
   }
 
