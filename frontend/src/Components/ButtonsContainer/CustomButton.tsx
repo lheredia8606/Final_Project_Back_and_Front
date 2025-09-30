@@ -1,5 +1,4 @@
 import "./buttons-container.css";
-import { TButtonProps } from "../../utils/ApplicationTypesAndGlobals";
 import { useRouter } from "@tanstack/react-router";
 
 type TCustomButtonProps = {

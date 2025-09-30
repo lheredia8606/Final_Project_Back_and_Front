@@ -3,7 +3,8 @@ import { TButtonProps } from "../../../utils/ApplicationTypesAndGlobals";
 import { useActiveBtn } from "../../../Providers/ActiveBtnProvider";
 
 export const UserProductBtnContainer = () => {
-  const { activeBtn, setActiveBtn } = useActiveBtn();
+  const { activeBtn } = useActiveBtn();
+
   const buttons: TButtonProps[] = [
     {
       btnText: "Products",

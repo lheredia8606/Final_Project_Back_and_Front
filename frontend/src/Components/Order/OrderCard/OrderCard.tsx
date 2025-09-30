@@ -1,5 +1,5 @@
 import { ReactNode } from "@tanstack/react-router";
-import { TOrder, TProductQty } from "../../../utils/ApplicationTypesAndGlobals";
+import { TOrder } from "../../../utils/ApplicationTypesAndGlobals";
 import {
   getDateFromString,
   getDaysUntilDeathLine,
@@ -30,7 +30,7 @@ export const OrderCard = ({
     }
   };
 
-  const getDeadLineText = (deadLine: string | null): string => {
+  const getDeadLineText = (deadLine: string | null | undefined): string => {
     if (!deadLine) {
       return "-";
     } else {

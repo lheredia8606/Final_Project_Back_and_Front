@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrderHistory")({
 });
 
 function RouteComponent() {
-  const { currenUserOrders: allOrders, isFetchingAllOrders } = useOrder();
+  const { allOrders, isFetchingAllOrders } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
 
@@ -24,6 +24,7 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("My Order history");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isFetchingAllOrders) {

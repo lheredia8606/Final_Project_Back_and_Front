@@ -26,6 +26,7 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("Products");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isFetchingAllProducts || isLoadingAllProducts) {

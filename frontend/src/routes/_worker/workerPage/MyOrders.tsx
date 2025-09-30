@@ -12,11 +12,7 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrders")({
 });
 
 function RouteComponent() {
-  const {
-    currenUserOrders: allOrders,
-    changeOrder,
-    isFetchingAllOrders,
-  } = useOrder();
+  const { allOrders, changeOrder, isFetchingAllOrders } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
   const myOrders = allOrders.filter((order) => {
@@ -25,7 +21,7 @@ function RouteComponent() {
     );
   });
 
-  const onMarkClick = (orderId: string) => {
+  const onMarkClick = (orderId: number) => {
     const toUpdate: Partial<Omit<TOrder, "id">> = {
       status: "ready",
     };
@@ -34,6 +30,7 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("My Orders");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isFetchingAllOrders) {

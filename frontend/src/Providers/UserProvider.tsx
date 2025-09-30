@@ -1,6 +1,6 @@
 import { ReactNode } from "@tanstack/react-router";
 import { createContext, useContext, useState } from "react";
-import { TUser, TUserToken } from "../utils/ApplicationTypesAndGlobals";
+import { TUserToken } from "../utils/ApplicationTypesAndGlobals";
 
 type TUserContextProps = {
   authenticatedUser: TUserToken | null;
@@ -11,11 +11,6 @@ type TUserContextProps = {
   // deleteUser: (id: string) => void;
   // authenticate: (email: string, password: string) => void;
   // addUserMutation: UseMutationResult<TUser, Error, Omit<TUser, "id">, unknown>;
-};
-
-type TUpdateMutationParams = {
-  id: string;
-  user: Omit<Partial<TUser>, "id">;
 };
 
 const UserContext = createContext<TUserContextProps>({} as TUserContextProps);

@@ -22,6 +22,7 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("My Orders");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (isLoadingFetchUserOrders || isFetchingUserOrders) {
     return <SpinnerModal />;

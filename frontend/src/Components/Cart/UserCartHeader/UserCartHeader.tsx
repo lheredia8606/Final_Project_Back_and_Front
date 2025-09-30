@@ -25,7 +25,7 @@ export const UserCartHeader = () => {
     if (!isFetchingUserOrders && !isLoadingFetchUserOrders) {
       setIsLoading(false);
     }
-  }, [isFetchingUserOrders]);
+  }, [isFetchingUserOrders, isLoadingFetchUserOrders]);
 
   const onPayClick = () => {
     if (cartId) {
@@ -38,7 +38,7 @@ export const UserCartHeader = () => {
   };
 
   const totalPrice = cartProducts.reduce((acc, { productId, qty }) => {
-    let product = getProductById(productId);
+    const product = getProductById(productId);
     if (product) {
       return Number((acc + product.price * qty).toFixed(2));
     }

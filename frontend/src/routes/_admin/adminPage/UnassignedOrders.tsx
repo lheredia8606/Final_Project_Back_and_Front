@@ -21,6 +21,7 @@ function RouteComponent() {
   });
   useEffect(() => {
     setActiveBtn("Unassigned Orders");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isError) {

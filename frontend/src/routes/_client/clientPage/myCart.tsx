@@ -38,6 +38,7 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("My Cart");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

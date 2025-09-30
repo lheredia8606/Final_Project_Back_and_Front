@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { TButtonProps } from "../../../utils/ApplicationTypesAndGlobals";
 import { CustomButton } from "../CustomButton";
 import { useActiveBtn } from "../../../Providers/ActiveBtnProvider";
 
 export const WorkerBtnContainer = () => {
-  const [activeButton, setActiveButton] = useState("Unassigned Orders");
   const { activeBtn } = useActiveBtn();
   const buttons: TButtonProps[] = [
     {

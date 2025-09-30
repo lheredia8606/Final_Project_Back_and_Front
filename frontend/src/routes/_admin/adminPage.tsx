@@ -16,6 +16,7 @@ function RouteComponent() {
     if (!authenticatedUser || authenticatedUser.role !== "admin") {
       route.navigate({ to: "/" });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authenticatedUser]);
   return (
     <>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useUser } from "../../../Providers/UserProvider";
-import { ErrorModal } from "../../ErrorModal/ErrorModal";
 import { TOrder } from "../../../utils/ApplicationTypesAndGlobals";
 import { useOrder } from "../../../Providers/OrderProvider";
 

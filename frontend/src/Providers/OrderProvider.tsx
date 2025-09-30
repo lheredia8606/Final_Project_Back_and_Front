@@ -76,6 +76,7 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setUserCart(fetchedUserCart);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedUserCart]);
 
   const addOrderMutation = useMutation({

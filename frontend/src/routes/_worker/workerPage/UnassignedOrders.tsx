@@ -16,7 +16,7 @@ function RouteComponent() {
   const {
     currenUserOrders: allOrders,
     changeOrder,
-    isFetchingAllOrders,
+    isFetchingUserOrders,
   } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
@@ -34,7 +34,7 @@ function RouteComponent() {
       return 1;
     });
 
-  const onClaimClick = (orderId: string) => {
+  const onClaimClick = (orderId: number) => {
     const toUpdate: Partial<Omit<TOrder, "id">> = {
       status: "processing",
       workerId: authenticatedUser?.id,
@@ -44,9 +44,10 @@ function RouteComponent() {
 
   useEffect(() => {
     setActiveBtn("Unassigned Orders");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isFetchingAllOrders) {
+  if (isFetchingUserOrders) {
     return <SpinnerModal />;
   }
 
