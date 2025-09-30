@@ -65,7 +65,11 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     enabled: !!authenticatedUser,
   });
   useEffect(() => {
-    if (!fetchedUserCart && authenticatedUser) {
+    if (
+      !fetchedUserCart &&
+      authenticatedUser &&
+      authenticatedUser.role === "client"
+    ) {
       const newOrder: Omit<TOrder, "id"> = {
         clientId: authenticatedUser.id,
         status: "in_cart",

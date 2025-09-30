@@ -53,7 +53,6 @@ orderController.post(
   verifyModifyOrderProductsQuery,
   async (req: AuthenticatedRequest, res) => {
     try {
-      console.log("product added in oder route");
       const orderId = Number(req.params.orderId);
       const productId = Number(req.params.productId);
       const qty = req.body.qty;

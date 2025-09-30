@@ -24,7 +24,7 @@ export const users: User[] = [
     passwordHash: "a",
     role: "worker",
     phone: "813 300 5699",
-    isActive: false,
+    isActive: true,
   },
   {
     id: 3,
@@ -88,7 +88,7 @@ export const orders: Orders[] = [
     id: 1,
     deadLine: null,
     clientId: 1,
-    workerId: 2,
+    workerId: null,
     status: "in_cart",
   },
   {
@@ -109,7 +109,7 @@ export const orders: Orders[] = [
     id: 4,
     deadLine: new Date(),
     clientId: 1,
-    workerId: 2,
+    workerId: null,
     status: "ordered",
   },
 ];

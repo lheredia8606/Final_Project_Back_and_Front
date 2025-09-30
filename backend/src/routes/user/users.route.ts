@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Prisma } from "../../../generated/prisma/index.js";
+import { Orders, Prisma } from "../../../generated/prisma/index.js";
 
 import {
   AuthenticatedRequest,
@@ -28,24 +28,48 @@ userController.post("/users/login", validateLoginBody, async (req, res) => {
   return res.status(200).json({ token: generateJwt(user) });
 });
 
+/**
+ * Retrieves orders based on the user’s role:
+ * - Client: receives only their own orders
+ * - Worker: receives orders assigned to them plus unassigned orders
+ * - Admin: receives all orders
+ */
 userController.get(
   "/user/orders",
   isTokenValid,
   async (req: AuthenticatedRequest, res) => {
     try {
-      const { id } = req.user!;
-      const orders = await prisma.orders.findMany({
-        where: {
-          clientId: id,
-        },
-        include: {
-          productQty: {
-            include: {
-              product: true,
+      const { id, role } = req.user!;
+      let orders: Orders[];
+      if (role === "client") {
+        orders = await prisma.orders.findMany({
+          where: {
+            clientId: id,
+          },
+          include: {
+            productQty: {
+              include: {
+                product: true,
+              },
             },
           },
-        },
-      });
+        });
+      } else if (role === "worker") {
+        orders = await prisma.orders.findMany({
+          where: {
+            OR: [{ workerId: id }, { status: "ordered" }],
+          },
+          include: {
+            productQty: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        });
+      } else {
+        orders = await prisma.orders.findMany();
+      }
       return res.status(200).json({ data: orders });
     } catch (error) {
       let message = "Unknown error";

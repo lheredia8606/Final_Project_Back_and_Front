@@ -21,15 +21,15 @@ function RouteComponent() {
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
   const unassignedOrders = allOrders
-    .filter((order) => {
-      return order.status === "ordered";
-    })
+    .filter((order) => order.status === "ordered")
     .sort((a, b) => {
-      let tempA, tempB: Temporal.PlainDate;
       if (a.deadLine && b.deadLine) {
-        tempA = Temporal.PlainDate.from(a.deadLine!);
-        tempB = Temporal.PlainDate.from(b.deadLine!);
-        return tempA.day - tempB.day;
+        //removing z designator to be able to convert to plain date
+        const normalize = (d: string) =>
+          d.includes("T") ? d.split("T")[0] : d.replace("Z", "");
+        const tempA = Temporal.PlainDate.from(normalize(a.deadLine));
+        const tempB = Temporal.PlainDate.from(normalize(b.deadLine));
+        return Temporal.PlainDate.compare(tempA, tempB);
       }
       return 1;
     });
