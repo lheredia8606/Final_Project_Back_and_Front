@@ -12,10 +12,10 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrders")({
 });
 
 function RouteComponent() {
-  const { allOrders, changeOrder, isFetchingAllOrders } = useOrder();
+  const { currenUserOrders, changeOrder, isFetchingUserOrders } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
-  const myOrders = allOrders.filter((order) => {
+  const myOrders = currenUserOrders.filter((order) => {
     return (
       order.workerId === authenticatedUser?.id && order.status === "processing"
     );
@@ -33,7 +33,7 @@ function RouteComponent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isFetchingAllOrders) {
+  if (isFetchingUserOrders) {
     return <SpinnerModal />;
   }
 

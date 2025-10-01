@@ -19,7 +19,7 @@ orderController.delete(
   "/products/:id",
   isTokenValid,
   validateIdParam,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { id } = req.params;
       const product = await prisma.products.delete({
@@ -27,15 +27,7 @@ orderController.delete(
       });
       return res.status(200).json({ data: product });
     } catch (error) {
-      let message = "Unknown error";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log({ error });
-
-        message = error.message;
-      } else if (error instanceof Error) {
-        message = error.message;
-      }
-      return res.status(401).json({ message });
+      next(error);
     }
   }
 );
@@ -51,7 +43,7 @@ orderController.post(
   "/orders/:orderId/products/:productId",
   isTokenValid,
   verifyModifyOrderProductsQuery,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const orderId = Number(req.params.orderId);
       const productId = Number(req.params.productId);
@@ -80,12 +72,7 @@ orderController.post(
       }
       return res.status(200).json({ data: product });
     } catch (error) {
-      let message = "Unknown Error";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        console.log({ message: error.stack });
-        message = error.message;
-      }
-      return res.status(400).json({ message });
+      next(error);
     }
   }
 );
@@ -94,7 +81,7 @@ orderController.post(
   "/orders/",
   isTokenValid,
   isPostOrderBodyValid,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { clientId, status } = req.body;
       const { id, role } = req.user!;
@@ -111,11 +98,7 @@ orderController.post(
       });
       res.status(200).json({ data: order });
     } catch (error) {
-      let message = "Unknown error creating order";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        message = `Prisma error creating order code ${error.code}`;
-      }
-      res.status(404).json({ message });
+      next(error);
     }
   }
 );
@@ -123,7 +106,7 @@ orderController.post(
 orderController.get(
   "/orders/",
   isTokenValid,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       if (req.user?.role !== "admin") {
         return res.status(401).json({ message: "Unauthorized" });
@@ -131,11 +114,7 @@ orderController.get(
       const orders = await prisma.orders.findMany();
       return res.status(200).json({ data: orders });
     } catch (error) {
-      let message = "Unknown Error Fetching all orders";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        message = error.message;
-      }
-      return res.status(404).json({ message });
+      next(error);
     }
   }
 );
@@ -150,7 +129,7 @@ orderController.patch(
   "/orders/:orderId",
   isTokenValid,
   isPatchBodyValid,
-  async (req: AuthReqPatchOrder, res) => {
+  async (req: AuthReqPatchOrder, res, next) => {
     const orderId = Number(req.params.orderId);
     const { role, id: userId } = req.user!;
     const { id, ...incomingOrder } = req.product!;
@@ -185,14 +164,7 @@ orderController.patch(
       });
       return res.status(200).json({ data: patchedOrder });
     } catch (error) {
-      console.log({ error });
-      console.log("error occurred patching order");
-
-      let message = "Unknown error patching order";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        message = `Prisma error patching order code ${error.code}`;
-      }
-      res.status(500).json({ message });
+      next(error);
     }
   }
 );

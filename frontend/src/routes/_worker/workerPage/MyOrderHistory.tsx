@@ -11,11 +11,11 @@ export const Route = createFileRoute("/_worker/workerPage/MyOrderHistory")({
 });
 
 function RouteComponent() {
-  const { allOrders, isFetchingAllOrders } = useOrder();
+  const { currenUserOrders, isFetchingUserOrders } = useOrder();
   const { authenticatedUser } = useUser();
   const { setActiveBtn } = useActiveBtn();
 
-  const myOrderHistory = allOrders.filter((order) => {
+  const myOrderHistory = currenUserOrders.filter((order) => {
     return (
       order.workerId === authenticatedUser?.id &&
       (order.status === "done" || order.status === "ready")
@@ -27,7 +27,7 @@ function RouteComponent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isFetchingAllOrders) {
+  if (isFetchingUserOrders) {
     return <SpinnerModal />;
   }
 

@@ -11,12 +11,12 @@ export const Route = createFileRoute("/_admin/adminPage/UnassignedOrders")({
 });
 
 function RouteComponent() {
-  const { allOrders } = useOrder();
+  const { currenUserOrders } = useOrder();
   const { setActiveBtn } = useActiveBtn();
   const [isError, setIsError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const unassigned = allOrders.filter((order) => {
+  const unassigned = currenUserOrders.filter((order) => {
     return order.status === "ordered";
   });
   useEffect(() => {

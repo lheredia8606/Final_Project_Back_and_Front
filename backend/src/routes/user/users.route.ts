@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Orders, Prisma } from "../../../generated/prisma/index.js";
+import { Orders } from "../../../generated/prisma/index.js";
 
 import {
   AuthenticatedRequest,
@@ -13,20 +13,31 @@ import {
 } from "./user.utils.js";
 export const userController = Router();
 
-userController.post("/users/login", validateLoginBody, async (req, res) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      email: req.body.email,
-    },
-  });
-  if (!user || !(await isPasswordValid(req.body.password, user.passwordHash))) {
-    return res.status(401).json({ message: "Invalid credentials" });
+userController.post(
+  "/users/login",
+  validateLoginBody,
+  async (req, res, next) => {
+    try {
+      const user = await prisma.user.findFirst({
+        where: {
+          email: req.body.email,
+        },
+      });
+      if (
+        !user ||
+        !(await isPasswordValid(req.body.password, user.passwordHash))
+      ) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+      if (!user.isActive) {
+        return res.status(401).json({ message: "Inactive User" });
+      }
+      return res.status(200).json({ token: generateJwt(user) });
+    } catch (error) {
+      next(error);
+    }
   }
-  if (!user.isActive) {
-    return res.status(401).json({ message: "Inactive User" });
-  }
-  return res.status(200).json({ token: generateJwt(user) });
-});
+);
 
 /**
  * Retrieves orders based on the user’s role:
@@ -37,7 +48,7 @@ userController.post("/users/login", validateLoginBody, async (req, res) => {
 userController.get(
   "/user/orders",
   isTokenValid,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { id, role } = req.user!;
       let orders: Orders[];
@@ -72,11 +83,7 @@ userController.get(
       }
       return res.status(200).json({ data: orders });
     } catch (error) {
-      let message = "Unknown error";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        message = `Prisma error code ${error.code}`;
-      }
-      return res.status(400).json({ message });
+      next(error);
     }
   }
 );
@@ -84,7 +91,7 @@ userController.get(
 userController.get(
   "/user/orders/myCart",
   isTokenValid,
-  async (req: AuthenticatedRequest, res) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { id } = req.user!;
 
@@ -103,11 +110,7 @@ userController.get(
       });
       return res.status(200).json({ data: cart });
     } catch (error) {
-      let message = "Unknown error";
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        message = `Prisma error code ${error.code}`;
-      }
-      return res.status(400).json({ message });
+      next(error);
     }
   }
 );
