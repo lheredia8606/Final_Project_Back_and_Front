@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Orders } from "../../../generated/prisma/index.js";
+import { Orders, Role } from "../../../generated/prisma/index.js";
 
 import {
   AuthenticatedRequest,
@@ -9,6 +9,7 @@ import {
 import {
   generateJwt,
   isPasswordValid,
+  validateGetUsers,
   validateLoginBody,
 } from "./user.utils.js";
 export const userController = Router();
@@ -33,6 +34,31 @@ userController.post(
         return res.status(401).json({ message: "Inactive User" });
       }
       return res.status(200).json({ token: generateJwt(user) });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+userController.get(
+  "/users",
+  isTokenValid,
+  validateGetUsers,
+  async (req: AuthenticatedRequest, res, next) => {
+    try {
+      const { userRole } = req.query;
+      const userRoleParam = Array.isArray(userRole) ? userRole[0] : userRole;
+
+      const role: Role | undefined =
+        userRoleParam && Object.values(Role).includes(userRoleParam as Role)
+          ? (userRoleParam as Role)
+          : undefined;
+
+      const where = role ? { role } : {};
+      const users = await prisma.user.findMany({
+        where,
+      });
+      return res.status(200).json({ data: users });
     } catch (error) {
       next(error);
     }

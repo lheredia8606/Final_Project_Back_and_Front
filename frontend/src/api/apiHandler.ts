@@ -4,27 +4,33 @@ export const apiHandler = <T>(endPoint: string) => {
   const urlEndpoint = `${baseUrl}${endPoint}`;
 
   const processResponse = async (response: Response) => {
-    let result: any;
     try {
-      result = await response.json();
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result?.message ?? "Unknown API error");
+      }
+      return result.data;
     } catch {
       throw new Error("Invalid JSON response");
     }
-
-    if (!response.ok) {
-      throw new Error(result?.message ?? "Unknown API error");
-    }
-
-    return result.data;
   };
 
   return {
     /**
+     * Retrieves a list of resources from the API with optional query parameters.
+     *
+     * @param mod: Record<string,string>
+     * @example {userRole: worker}
      * Fetch all resources
      * @returns Promise that resolves to T[]
      */
-    getAll: async (mod: string = ""): Promise<T[]> => {
-      const response = await fetch(urlEndpoint + mod, {
+    getAll: async (mod: Record<string, string> = {}): Promise<T[]> => {
+      const modifier = Object.entries(mod)
+        .map(([param, value]) => {
+          return `${param}=${value}`;
+        })
+        .join("&");
+      const response = await fetch(`${urlEndpoint}?${modifier}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("userJwt")}`,

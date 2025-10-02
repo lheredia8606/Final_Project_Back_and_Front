@@ -4,7 +4,7 @@ import { apiHandler } from "../api/apiHandler";
 //globals
 export const baseUrl = "http://localhost:3000/";
 export const orderApi = apiHandler<TOrder>("orders");
-export const userApi = apiHandler<TUser>("user");
+export const userApi = apiHandler<TUser>("users");
 
 export const phoneInputMaxLength = [3, 3, 4];
 

@@ -8,16 +8,15 @@ export const getAllUserOrders = async (): Promise<TOrder[]> => {
       Authorization: `Bearer ${localStorage.getItem("userJwt")}`,
     },
   });
-  let result: any;
   try {
-    result = await response.json();
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result?.message ?? "Unknown error");
+    }
+    return result.data;
   } catch {
     throw new Error("Invalid JSON response");
   }
-  if (!response.ok) {
-    throw new Error(result?.message ?? "Unknown error");
-  }
-  return result.data;
 };
 
 export const modifyProductQtyInOrder = async (

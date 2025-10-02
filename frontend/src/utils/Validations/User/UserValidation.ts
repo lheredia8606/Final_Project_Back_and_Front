@@ -13,6 +13,8 @@ export const isEmailValid = (emailAddress: string) => {
 };
 
 export const isPhoneValid = (phone: string[]) => {
+  console.log({ phone });
+
   for (let i = 0; i < phone.length; i++) {
     if (phone[i].length !== phoneInputMaxLength[i]) return false;
   }

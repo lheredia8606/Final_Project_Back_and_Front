@@ -5,7 +5,6 @@ import {
   isTokenValid,
   prisma,
 } from "../../utils/globals.js";
-import { Prisma } from "../../../generated/prisma/index.js";
 import { validateIdParam } from "../generalUtils.js";
 import {
   isPatchBodyValid,

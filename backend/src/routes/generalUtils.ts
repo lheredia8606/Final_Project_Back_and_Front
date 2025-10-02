@@ -13,6 +13,6 @@ export const validateIdParam = (
     paramsSchema.parse(req.params);
     next();
   } catch (e) {
-    return res.status(400).json({ message: "Invalid parameters" });
+    next(e);
   }
 };

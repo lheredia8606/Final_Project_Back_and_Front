@@ -26,13 +26,7 @@ export const verifyModifyOrderProductsQuery = (
     orderModifyProductsBodySchema.parse(body);
     next();
   } catch (error) {
-    let message = "Unknown error validating the request";
-    if (error instanceof ZodError) {
-      const parsed = JSON.parse(error.message)[0];
-      const path = parsed.path[0] ? `${parsed.path[0]}: ` : "";
-      message = `${path}${parsed.message}`;
-    }
-    return res.status(400).json({ message });
+    next(error);
   }
 };
 
@@ -52,11 +46,7 @@ export const isPostOrderBodyValid = (
     createOrderSchema.parse(req.body);
     next();
   } catch (error) {
-    let message = "Unknown error validating the request";
-    if (error instanceof ZodError) {
-      message = error.issues[0]?.message || "Unknown zod error";
-    }
-    return res.status(400).json({ message });
+    next(error);
   }
 };
 
@@ -70,10 +60,6 @@ export const isPatchBodyValid = (
     (req as AuthReqPatchOrder).product = parsedBody;
     next();
   } catch (error) {
-    let message = "Unknown error validating the request";
-    if (error instanceof ZodError) {
-      message = error.issues[0]?.message || "Unknown zod error";
-    }
-    return res.status(400).json({ message });
+    next(error);
   }
 };

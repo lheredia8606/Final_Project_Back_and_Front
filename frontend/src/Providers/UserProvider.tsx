@@ -1,10 +1,21 @@
 import { ReactNode } from "@tanstack/react-router";
 import { createContext, useContext, useState } from "react";
-import { TUserToken } from "../utils/ApplicationTypesAndGlobals";
+import {
+  TUser,
+  TUserToken,
+  userApi,
+} from "../utils/ApplicationTypesAndGlobals";
+import { useQuery } from "@tanstack/react-query";
+import { apiHandler } from "../api/apiHandler";
+import { AdminAssignOrder } from "../Components/User/Admin/AdminAssignOrder";
 
 type TUserContextProps = {
   authenticatedUser: TUserToken | null;
   setAuthenticatedUser: (user: TUserToken | null) => void;
+  allWorkers: TUser[] | undefined;
+  isFetchingAllWorkers: boolean;
+  isErrorAllWorkers: boolean;
+  allWorkersError: Error | null;
   // allUsers: TUser[] | undefined;
   // isLoadingUsers: boolean;
   // createUser: (newUser: Omit<TUser, "id">) => void;
@@ -18,6 +29,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [authenticatedUser, setAuthenticatedUser] = useState<TUserToken | null>(
     null
   );
+  const {
+    data: allWorkers,
+    isError: isErrorAllWorkers,
+    isFetching: isFetchingAllWorkers,
+    error: allWorkersError,
+  } = useQuery<TUser[]>({
+    queryKey: ["getAllWorkers"],
+    queryFn: () => userApi.getAll({ userRole: "worker" }),
+    enabled: !!authenticatedUser && authenticatedUser.role === "admin",
+  });
   // const queryClient = useQueryClient();
   // const [allUsers, setAllUsers] = useState<TUser[]>([]);
 
@@ -113,6 +134,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           // deleteUser,
           authenticatedUser,
           setAuthenticatedUser,
+          allWorkers,
+          allWorkersError,
+          isFetchingAllWorkers,
+          isErrorAllWorkers,
           // authenticate,
           // addUserMutation,
         }}

@@ -2,7 +2,7 @@ import { hash, compare } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import { z, ZodError } from "zod";
 import jwt from "jsonwebtoken";
-import { User } from "../../../generated/prisma/index.js";
+import { Role, User } from "../../../generated/prisma/index.js";
 import { jwtSecret } from "../../utils/globals.js";
 
 export const getPasswordHash = async (password: string) => {
@@ -73,10 +73,25 @@ export const validateUserOrdersParams = (
     userOrdersSchema.parse(req.params);
     next();
   } catch (error) {
-    let message = "Unknown error";
-    if (error instanceof ZodError) {
-      message = error.issues[0]?.message || "Unknown error";
-    }
-    return res.status(400).json({ message });
+    next(error);
+  }
+};
+
+const getUserReqSchema = z
+  .object({
+    userRole: z.enum(Role).optional(),
+  })
+  .strict();
+
+export const validateGetUsers = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    getUserReqSchema.parse(req.query);
+    next();
+  } catch (error) {
+    next(error);
   }
 };

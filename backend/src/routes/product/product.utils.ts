@@ -34,7 +34,7 @@ export const isPostBodyValid = (
     const response = productSchema.parse(req.body);
     next();
   } catch (e) {
-    return res.status(400).json({ message: "Invalid payload" });
+    next(e);
   }
 };
 
@@ -56,10 +56,6 @@ export const isProductPatchBodyValid = (
     patchBodySchema.parse(req.body);
     next();
   } catch (error) {
-    let message = "Unknown error";
-    if (error instanceof ZodError) {
-      message = JSON.parse(error.message)[0].message;
-    }
-    return res.status(400).json({ message });
+    next(error);
   }
 };
