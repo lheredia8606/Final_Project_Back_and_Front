@@ -1,9 +1,10 @@
 import { hash, compare } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
-import { z, ZodError } from "zod";
+import { z } from "zod";
 import jwt from "jsonwebtoken";
 import { Role, User } from "../../../generated/prisma/index.js";
 import { jwtSecret } from "../../utils/globals.js";
+import { UserCreateResultSchema } from "../../../prisma/zod/schemas/results/UserCreateResult.schema.js";
 
 export const getPasswordHash = async (password: string) => {
   return await hash(password, 11);
@@ -90,6 +91,24 @@ export const validateGetUsers = (
 ) => {
   try {
     getUserReqSchema.parse(req.query);
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const validateCreateUserBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const createUserSchema = UserCreateResultSchema.partial({
+      id: true,
+      clientOrders: true,
+      workerOrders: true,
+    });
+    createUserSchema.parse(req.body);
     next();
   } catch (error) {
     next(error);

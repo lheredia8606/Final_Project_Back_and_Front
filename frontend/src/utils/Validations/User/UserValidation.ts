@@ -12,17 +12,16 @@ export const isEmailValid = (emailAddress: string) => {
   return !!emailAddress.match(regex);
 };
 
-export const isPhoneValid = (phone: string[]) => {
-  console.log({ phone });
-
-  for (let i = 0; i < phone.length; i++) {
-    if (phone[i].length !== phoneInputMaxLength[i]) return false;
+export const isPhoneValid = (phone: string) => {
+  const arrPhone = phone.split("-");
+  for (let i = 0; i < arrPhone.length; i++) {
+    if (arrPhone[i].length !== phoneInputMaxLength[i]) return false;
   }
   return true;
 };
 
-export function isUserValid(userInfo: Omit<TUser, "id">, phone: string[]) {
-  const { email, firstName, lastName } = userInfo;
+export function isUserValid(userInfo: Omit<TUser, "id">) {
+  const { email, firstName, lastName, phone } = userInfo;
 
   return (
     isEmailValid(email) &&

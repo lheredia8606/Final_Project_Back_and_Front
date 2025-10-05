@@ -16,6 +16,8 @@ export const userSchema = z.object({
   email: z.email(),
   role: z.enum(["client", "worker", "admin"]),
   password: z.string(),
+  isActive: z.boolean(),
+  phone: z.string(),
 });
 
 export type TUser = z.infer<typeof userSchema>;

@@ -1,9 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
+}
+
+generator zod {
+  provider = "prisma-zod-generator"
+  output   = "./zod"
 }
 
 datasource db {
@@ -20,7 +22,7 @@ model User{
   role Role @default(client)
   phone String
   isActive Boolean
-  clientOrders Orders[] @relation("ClientOrders")
+  clientOrders Orders[]  @relation("ClientOrders")
   workerOrders Orders[] @relation("WorkerOrders")
 }
 

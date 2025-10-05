@@ -9,10 +9,27 @@ import {
 import {
   generateJwt,
   isPasswordValid,
+  validateCreateUserBody,
   validateGetUsers,
   validateLoginBody,
 } from "./user.utils.js";
 export const userController = Router();
+
+userController.post(
+  "/users",
+  validateCreateUserBody,
+  async (req, res, next) => {
+    try {
+      //const userBody = JSON.parse(req.body);
+      const user = await prisma.user.create({
+        data: req.body,
+      });
+      return res.status(200).json({ data: user });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 userController.post(
   "/users/login",
@@ -40,6 +57,12 @@ userController.post(
   }
 );
 
+/**
+ * Retrieves users based on userRole passed as queryParams:
+ * if undefined retrieves all users
+ *
+ * @queryParams userRole: admin | worker | client | undefined
+ */
 userController.get(
   "/users",
   isTokenValid,

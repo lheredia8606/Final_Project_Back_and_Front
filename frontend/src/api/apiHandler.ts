@@ -4,15 +4,11 @@ export const apiHandler = <T>(endPoint: string) => {
   const urlEndpoint = `${baseUrl}${endPoint}`;
 
   const processResponse = async (response: Response) => {
-    try {
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result?.message ?? "Unknown API error");
-      }
-      return result.data;
-    } catch {
-      throw new Error("Invalid JSON response");
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result?.message ?? "Unknown API error");
     }
+    return result.data;
   };
 
   return {

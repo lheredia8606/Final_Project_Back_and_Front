@@ -5,9 +5,11 @@ import {
   TUserToken,
   userApi,
 } from "../utils/ApplicationTypesAndGlobals";
-import { useQuery } from "@tanstack/react-query";
-import { apiHandler } from "../api/apiHandler";
-import { AdminAssignOrder } from "../Components/User/Admin/AdminAssignOrder";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+} from "@tanstack/react-query";
 
 type TUserContextProps = {
   authenticatedUser: TUserToken | null;
@@ -21,7 +23,7 @@ type TUserContextProps = {
   // createUser: (newUser: Omit<TUser, "id">) => void;
   // deleteUser: (id: string) => void;
   // authenticate: (email: string, password: string) => void;
-  // addUserMutation: UseMutationResult<TUser, Error, Omit<TUser, "id">, unknown>;
+  addUserMutation: UseMutationResult<TUser, Error, Omit<TUser, "id">, unknown>;
 };
 
 const UserContext = createContext<TUserContextProps>({} as TUserContextProps);
@@ -58,14 +60,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   //   queryFn: () => apiUser.getAll(),
   // });
 
-  // const addUserMutation = useMutation({
-  //   mutationFn: (user: Omit<TUser, "id">) => apiUser.post(user),
-  //   // onSuccess: () =>
-  //   //   queryClient.invalidateQueries({ queryKey: ["fetchAllUsers"] }),
-  //   onError: () => {
-  //     console.log("Error trying to add a user");
-  //   },
-  // });
+  const addUserMutation = useMutation({
+    mutationFn: (user: Omit<TUser, "id">) => userApi.create(user),
+  });
 
   // const createUserMutation = useMutation({
   //   mutationFn: (newUser: Omit<TUser, "id">) => {
@@ -79,7 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   //   // },
   // });
   // const createUser = (newUser: Omit<TUser, "id">) => {
-  //   createUserMutation.mutate(newUser);
+  //   addUserMutation.mutate(newUser);
   // };
 
   // const deleteUserMutation = useMutation({
@@ -139,7 +136,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           isFetchingAllWorkers,
           isErrorAllWorkers,
           // authenticate,
-          // addUserMutation,
+          addUserMutation,
         }}
       >
         {children}
