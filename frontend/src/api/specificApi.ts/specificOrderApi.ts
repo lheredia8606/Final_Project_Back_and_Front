@@ -1,7 +1,7 @@
 import { baseUrl, TOrder } from "../../utils/ApplicationTypesAndGlobals";
 
 export const getAllUserOrders = async (): Promise<TOrder[]> => {
-  const response = await fetch(`${baseUrl}user/orders`, {
+  const response = await fetch(`${baseUrl}users/orders`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

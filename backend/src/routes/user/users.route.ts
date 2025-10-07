@@ -14,6 +14,7 @@ import {
   validateGetUsers,
   validateLoginBody,
 } from "./user.utils.js";
+import { productController } from "../product/products.route.js";
 export const userController = Router();
 
 userController.post(
@@ -22,12 +23,10 @@ userController.post(
   async (req, res, next) => {
     try {
       const password = await getPasswordHash(req.body.password);
-      console.log({ password });
 
       const user = await prisma.user.create({
         data: { ...req.body, password },
       });
-      console.log(user);
 
       return res.status(200).json({ data: user });
     } catch (error) {
@@ -97,7 +96,7 @@ userController.get(
  * - Admin: receives all orders
  */
 userController.get(
-  "/user/orders",
+  "/users/orders",
   isTokenValid,
   async (req: AuthenticatedRequest, res, next) => {
     try {
@@ -130,7 +129,15 @@ userController.get(
           },
         });
       } else {
-        orders = await prisma.orders.findMany();
+        orders = await prisma.orders.findMany({
+          include: {
+            productQty: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        });
       }
       return res.status(200).json({ data: orders });
     } catch (error) {

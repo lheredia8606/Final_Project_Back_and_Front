@@ -83,6 +83,11 @@ export const OrderProvider = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedUserCart]);
 
+  //erase this useeffect
+  useEffect(() => {
+    console.log({ currenUserOrders });
+  }, [currenUserOrders]);
+
   const addOrderMutation = useMutation({
     mutationFn: (order: Omit<TOrder, "id">) => apiOrders.create(order),
     onSuccess: () =>

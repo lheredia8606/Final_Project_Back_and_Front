@@ -44,8 +44,6 @@ function RouteComponent() {
         throw new Error("Malformed jwt");
       }
     } catch (err: unknown) {
-      console.log(err);
-
       let errorMessage = "An unexpected error occurred";
       if (err instanceof Error) {
         errorMessage = err.message;
