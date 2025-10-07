@@ -1,7 +1,7 @@
 import { phoneInputMaxLength, TUser } from "../../ApplicationTypesAndGlobals";
 
 export const isAllLetters = (inputString: string) =>
-  /^[A-Za-z]+$/.test(inputString);
+  /^[A-Za-z\s]+$/.test(inputString);
 
 export const isNameValid = (name: string) => {
   return isAllLetters(name) && name.length >= 2;
@@ -20,13 +20,18 @@ export const isPhoneValid = (phone: string) => {
   return true;
 };
 
+export const isPasswordValid = (password: string) => {
+  return password.trim() !== "";
+};
+
 export function isUserValid(userInfo: Omit<TUser, "id">) {
-  const { email, firstName, lastName, phone } = userInfo;
+  const { email, firstName, lastName, phone, password } = userInfo;
 
   return (
     isEmailValid(email) &&
     isNameValid(firstName) &&
     isNameValid(lastName) &&
-    isPhoneValid(phone)
+    isPhoneValid(phone) &&
+    isPasswordValid(password)
   );
 }

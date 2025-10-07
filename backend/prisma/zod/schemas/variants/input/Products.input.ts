@@ -1,6 +1,6 @@
-import * as z from "zod";
+import * as z from 'zod';
 
-import { ProductTypeSchema } from "../../enums/ProductType.schema.js";
+import { ProductTypeSchema } from '../../enums/ProductType.schema';
 // prettier-ignore
 export const ProductsInputSchema = z.object({
     id: z.number().int(),

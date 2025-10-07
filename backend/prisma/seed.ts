@@ -10,7 +10,7 @@ async function main() {
     id,
     isActive,
     lastName,
-    passwordHash,
+    password,
     phone,
     role,
   } of users) {
@@ -22,7 +22,7 @@ async function main() {
         firstName,
         isActive,
         lastName,
-        passwordHash: await getPasswordHash(passwordHash),
+        password: await getPasswordHash(password),
         phone,
       },
     });

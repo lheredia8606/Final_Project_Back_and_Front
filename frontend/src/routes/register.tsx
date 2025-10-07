@@ -29,20 +29,24 @@ function RouteComponent() {
   const [showModalError, setShowModalError] = useState<boolean>(false);
   const [modalErrorMessage, setModalErrorMessage] = useState("");
 
+  const getUser = () => {
+    const user: Omit<TUser, "id"> = {
+      email: emailInput,
+      firstName: firstNameInput,
+      isActive: true,
+      lastName: lastNameInput,
+      password: passwordInput,
+      phone: phoneInput.join("-"),
+      role: roleInput as "client" | "worker" | "admin",
+    };
+    return user;
+  };
+
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
       setWasTriedToSubmit(true);
-      const user: Omit<TUser, "id"> = {
-        email: emailInput,
-        firstName: firstNameInput,
-        isActive: true,
-        lastName: lastNameInput,
-        password: passwordInput,
-        phone: phoneInput.join("-"),
-        role: roleInput as "client" | "worker" | "admin",
-      };
-
+      const user = getUser();
       if (!isUserValid(user)) {
         return;
       }
@@ -123,7 +127,11 @@ function RouteComponent() {
                 setPhoneInput={setPhoneInput}
                 wasTriedToSubmit={wasTriedToSubmit}
               />
-              <button type="submit" className="login-btn">
+              <button
+                type="submit"
+                className="login-btn"
+                disabled={wasTriedToSubmit && !isUserValid(getUser())}
+              >
                 Register
               </button>
               <Link to="/login" className="register-link">

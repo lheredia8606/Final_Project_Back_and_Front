@@ -7,7 +7,7 @@ const makeSchema = () => z.object({
   firstName: SortOrderSchema.optional(),
   lastName: SortOrderSchema.optional(),
   email: SortOrderSchema.optional(),
-  passwordHash: SortOrderSchema.optional(),
+  password: SortOrderSchema.optional(),
   role: SortOrderSchema.optional(),
   phone: SortOrderSchema.optional(),
   isActive: SortOrderSchema.optional()

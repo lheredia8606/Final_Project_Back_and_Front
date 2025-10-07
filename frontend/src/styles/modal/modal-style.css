@@ -94,6 +94,10 @@
 .login-btn:hover {
   background-color: #0056b3;
 }
+
+.login-btn:disabled {
+  background-color: #ccc;
+}
 .register-link {
   display: block;
   margin-top: 10px;

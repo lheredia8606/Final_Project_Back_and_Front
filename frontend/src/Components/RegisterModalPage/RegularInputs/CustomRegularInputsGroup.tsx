@@ -1,6 +1,7 @@
 import {
   isEmailValid,
   isNameValid,
+  isPasswordValid,
 } from "../../../utils/Validations/User/UserValidation";
 import { CustomRegularInputs } from "./CustomRegularInputs";
 
@@ -71,7 +72,7 @@ export const CustomRegularInputsGroup = ({
       placeHolder: "Enter your password",
       setStateValue: setPasswordInput,
       stateValue: passwordInput,
-      validationFn: isNameValid,
+      validationFn: isPasswordValid,
     },
   ];
   return (

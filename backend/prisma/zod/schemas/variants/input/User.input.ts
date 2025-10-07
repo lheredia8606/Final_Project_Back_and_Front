@@ -1,13 +1,13 @@
-import * as z from "zod";
+import * as z from 'zod';
 
-import { RoleSchema } from "../../enums/Role.schema.js";
+import { RoleSchema } from '../../enums/Role.schema';
 // prettier-ignore
 export const UserInputSchema = z.object({
     id: z.number().int(),
     firstName: z.string(),
     lastName: z.string(),
     email: z.string(),
-    passwordHash: z.string(),
+    password: z.string(),
     role: RoleSchema,
     phone: z.string(),
     isActive: z.boolean(),

@@ -4,7 +4,7 @@ export const UserAggregateResultSchema = z.object({  _count: z.object({
     firstName: z.number(),
     lastName: z.number(),
     email: z.number(),
-    passwordHash: z.number(),
+    password: z.number(),
     role: z.number(),
     phone: z.number(),
     isActive: z.number(),
@@ -22,7 +22,7 @@ export const UserAggregateResultSchema = z.object({  _count: z.object({
     firstName: z.string().nullable(),
     lastName: z.string().nullable(),
     email: z.string().nullable(),
-    passwordHash: z.string().nullable(),
+    password: z.string().nullable(),
     phone: z.string().nullable()
   }).nullable().optional(),
   _max: z.object({
@@ -30,6 +30,6 @@ export const UserAggregateResultSchema = z.object({  _count: z.object({
     firstName: z.string().nullable(),
     lastName: z.string().nullable(),
     email: z.string().nullable(),
-    passwordHash: z.string().nullable(),
+    password: z.string().nullable(),
     phone: z.string().nullable()
   }).nullable().optional()});

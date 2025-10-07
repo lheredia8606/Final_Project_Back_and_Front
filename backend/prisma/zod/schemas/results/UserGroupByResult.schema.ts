@@ -4,7 +4,7 @@ export const UserGroupByResultSchema = z.array(z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string(),
-  passwordHash: z.string(),
+  password: z.string(),
   phone: z.string(),
   isActive: z.boolean(),
   _count: z.object({
@@ -12,7 +12,7 @@ export const UserGroupByResultSchema = z.array(z.object({
     firstName: z.number(),
     lastName: z.number(),
     email: z.number(),
-    passwordHash: z.number(),
+    password: z.number(),
     role: z.number(),
     phone: z.number(),
     isActive: z.number(),
@@ -30,7 +30,7 @@ export const UserGroupByResultSchema = z.array(z.object({
     firstName: z.string().nullable(),
     lastName: z.string().nullable(),
     email: z.string().nullable(),
-    passwordHash: z.string().nullable(),
+    password: z.string().nullable(),
     phone: z.string().nullable()
   }).nullable().optional(),
   _max: z.object({
@@ -38,7 +38,7 @@ export const UserGroupByResultSchema = z.array(z.object({
     firstName: z.string().nullable(),
     lastName: z.string().nullable(),
     email: z.string().nullable(),
-    passwordHash: z.string().nullable(),
+    password: z.string().nullable(),
     phone: z.string().nullable()
   }).nullable().optional()
 }));

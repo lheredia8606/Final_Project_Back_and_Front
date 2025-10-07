@@ -4,7 +4,7 @@ export const UserUpsertResultSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
   email: z.string(),
-  passwordHash: z.string(),
+  password: z.string(),
   role: z.unknown(),
   phone: z.string(),
   isActive: z.boolean(),

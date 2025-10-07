@@ -8,6 +8,7 @@ import {
 } from "../../utils/globals.js";
 import {
   generateJwt,
+  getPasswordHash,
   isPasswordValid,
   validateCreateUserBody,
   validateGetUsers,
@@ -20,10 +21,14 @@ userController.post(
   validateCreateUserBody,
   async (req, res, next) => {
     try {
-      //const userBody = JSON.parse(req.body);
+      const password = await getPasswordHash(req.body.password);
+      console.log({ password });
+
       const user = await prisma.user.create({
-        data: req.body,
+        data: { ...req.body, password },
       });
+      console.log(user);
+
       return res.status(200).json({ data: user });
     } catch (error) {
       next(error);
@@ -41,10 +46,7 @@ userController.post(
           email: req.body.email,
         },
       });
-      if (
-        !user ||
-        !(await isPasswordValid(req.body.password, user.passwordHash))
-      ) {
+      if (!user || !(await isPasswordValid(req.body.password, user.password))) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       if (!user.isActive) {

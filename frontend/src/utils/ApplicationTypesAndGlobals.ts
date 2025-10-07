@@ -22,9 +22,11 @@ export const userSchema = z.object({
 
 export type TUser = z.infer<typeof userSchema>;
 
-export const tokenSchema = userSchema.omit({ password: true }).extend({
-  iat: z.number().int(),
-});
+export const tokenSchema = userSchema
+  .omit({ password: true, phone: true })
+  .extend({
+    iat: z.number().int(),
+  });
 
 export type TUserToken = z.infer<typeof tokenSchema>;
 
