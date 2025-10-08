@@ -45,7 +45,7 @@ function RouteComponent() {
         return (
           <React.Fragment key={order.id}>
             <OrderCard order={order}>
-              <div></div>
+              <></>
             </OrderCard>
           </React.Fragment>
         );
