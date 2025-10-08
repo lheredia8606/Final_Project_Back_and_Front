@@ -93,6 +93,10 @@
   background-color: #0056b3;
 }
 
+.order-btn:disabled {
+  background-color: #ccc;
+}
+
 .order-btn:focus {
   outline: none;
 }

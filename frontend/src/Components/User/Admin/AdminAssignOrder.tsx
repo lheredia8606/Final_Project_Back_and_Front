@@ -20,11 +20,14 @@ export const AdminAssignOrder = ({
   const { allWorkers } = useUser();
   const { changeOrder } = useOrder();
 
-  const onAssignClick = (orderId: number) => {
-    const worker = allWorkers?.find((user) => {
+  const findWorker = () => {
+    return allWorkers?.find((user) => {
       return user.id === workerId;
     });
-    if (!worker) {
+  };
+
+  const onAssignClick = (orderId: number) => {
+    if (!findWorker()) {
       setErrorMessage(`No worker found with id "${workerId}"`);
       setIsError(true);
     }
@@ -57,7 +60,11 @@ export const AdminAssignOrder = ({
               );
             })}
           </datalist>
-          <button className="order-btn" onClick={() => onAssignClick(orderId)}>
+          <button
+            className="order-btn"
+            onClick={() => onAssignClick(orderId)}
+            disabled={!findWorker()}
+          >
             Assign
           </button>
         </div>
